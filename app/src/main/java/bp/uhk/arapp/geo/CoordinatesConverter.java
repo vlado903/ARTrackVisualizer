@@ -39,7 +39,7 @@ public class CoordinatesConverter {
     private synchronized void calculateCoordinates() {
         calculateLocalCoordinates();
         convertCoordinatesToMeters();
-        if (interpolationMode) interpolateCoordinatesIfFar();
+        if (interpolationMode) zoomCoordinatesIfFar();
     }
 
     private void calculateLocalCoordinates() {
@@ -62,16 +62,16 @@ public class CoordinatesConverter {
         z = objectAlt - userAlt;
     }
 
-    private void interpolateCoordinatesIfFar() {
+    private void zoomCoordinatesIfFar() {
 
         double distanceXY = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));                        //vzdálenost bez ohledu na nadmořskou výšku v metrech
         double distance = (float) Math.sqrt(Math.pow(distanceXY, 2) + Math.pow(z, 2));        //celková vzdálenost v metrech
 
         double distanceOver = distance - MAX_FAR_VALUE;
 
-        if (distanceOver > 1) {   // pro vzdálenost větší než MAX_FAR_VALUE (dále se nevykresluje) proveď interpolaci
+        if (distanceOver > 1) {   // pro vzdálenost větší než MAX_FAR_VALUE (dále se nevykresluje) proveď přiblížení
 
-            //pěkná funkce pro interpolaci; Math.min, protože pokud by bylo distance větší než Z_FAR_VALUE, bod by se nevykreslil
+            //pěkná funkce pro přiblížení; Math.min, protože pokud by bylo distance větší než Z_FAR_VALUE, bod by se nevykreslil
             distance = Math.min(MAX_FAR_VALUE + 20 + Math.pow(Math.log(distanceOver), 3) / 2, WorldRenderer.Z_FAR_VALUE);
 
             double slope3D = z/distanceXY;

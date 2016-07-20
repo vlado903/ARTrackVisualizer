@@ -18,10 +18,9 @@
         android:orderInCategory="4" app:showAsAction="never" />
 
     <item android:id="@+id/action_change_language" android:title="@string/change_language"
-        android:orderInCategory="4" app:showAsAction="never" />
+        android:orderInCategory="5" app:showAsAction="never" />
 
-
-    <!--<item android:id="@+id/action_settings" android:title="Nastavení"-->
-        <!--android:orderInCategory="100" app:showAsAction="never" />-->
+    <item android:id="@+id/action_about" android:title="@string/about"
+        android:orderInCategory="6" app:showAsAction="never" />
 
 </menu>

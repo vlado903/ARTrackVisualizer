@@ -26,14 +26,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import bp.uhk.arapp.R;
 import bp.uhk.arapp.ar.SensorProvider;
 import bp.uhk.arapp.ar.WorldRenderer;
-import bp.uhk.arapp.view.util.CountDown;
-import bp.uhk.arapp.view.util.CountDownCallback;
 import bp.uhk.arapp.view.util.LocaleHelper;
 import bp.uhk.arapp.view.util.ScrollGestureDetector;
 import bp.uhk.arapp.view.util.ScrollGestureListener;
@@ -48,7 +45,7 @@ import bp.uhk.arapp.view.util.ScrollGestureListener;
  * @see SensorManager
  *
  */
-public class ARActivity extends Activity implements CountDownCallback, ScrollGestureListener {
+public class ARActivity extends Activity implements ScrollGestureListener {
 
     static final float GESTURE_FIX_SPEED = 0.1f;
 
@@ -56,8 +53,7 @@ public class ARActivity extends Activity implements CountDownCallback, ScrollGes
     private WorldRenderer renderer;
     private SensorProvider sensorProvider;
 
-    private TextView countdownTextView, holdSteadyTextView, fixTextView;
-    private Button calibrateButton;
+    private TextView fixTextView;
     private long lastFixTextViewUpdate;
 
     private ScrollGestureDetector gestureDetector;
@@ -75,11 +71,9 @@ public class ARActivity extends Activity implements CountDownCallback, ScrollGes
 
         // Vytvoř SensorProvider a dodej mu kontext
         sensorProvider = new SensorProvider(this);
+        sensorProvider.start();
 
-        countdownTextView = (TextView) findViewById(R.id.tv_countdown);
-        holdSteadyTextView = (TextView) findViewById(R.id.tv_hold_steady);
         fixTextView = (TextView) findViewById(R.id.tv_fix);
-        calibrateButton = (Button) findViewById(R.id.button_startCalibration);
 
         renderer = new WorldRenderer(sensorProvider);
         glSurfaceView = (GLSurfaceView)findViewById(R.id.glSurfaceView);
@@ -89,38 +83,7 @@ public class ARActivity extends Activity implements CountDownCallback, ScrollGes
         glSurfaceView.setZOrderOnTop(true);
 
         gestureDetector = new ScrollGestureDetector(this, this);
-
-        fixTextView.setVisibility(View.INVISIBLE);
-
-        showCalibrationUI();
     }
-
-    public void startCalibration(View view){
-        sensorProvider.start();
-        calibrateButton.setVisibility(View.INVISIBLE);
-        startCalibrationCountdown();
-    }
-
-    private void showCalibrationUI(){
-        glSurfaceView.setVisibility(View.INVISIBLE);
-
-        countdownTextView.setText(Math.round(SensorProvider.COMPASS_CALIBRATION_TIMEOUT / 1000) + "");
-        countdownTextView.setVisibility(View.VISIBLE);
-        holdSteadyTextView.setVisibility(View.VISIBLE);
-        calibrateButton.setVisibility(View.VISIBLE);
-    }
-
-    private void hideCalibrationUI(){
-        countdownTextView.setVisibility(View.INVISIBLE);
-        holdSteadyTextView.setVisibility(View.INVISIBLE);
-
-        glSurfaceView.setVisibility(View.VISIBLE);
-    }
-
-    private void startCalibrationCountdown(){
-        new CountDown((long) SensorProvider.COMPASS_CALIBRATION_TIMEOUT, 1000, this).start();
-    }
-
 
     @Override
     protected void onResume() {
@@ -129,8 +92,6 @@ public class ARActivity extends Activity implements CountDownCallback, ScrollGes
         super.onResume();
 
         hideStatusBar();
-
-        showCalibrationUI();
 
         glSurfaceView.onResume();
     }
@@ -151,16 +112,6 @@ public class ARActivity extends Activity implements CountDownCallback, ScrollGes
             int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
             decorView.setSystemUiVisibility(uiOptions);
         }
-    }
-
-    @Override
-    public void countDownTick(int i) {
-        countdownTextView.setText(i + "");
-    }
-
-    @Override
-    public void countDownFinish() {
-        hideCalibrationUI();
     }
 
     @Override
@@ -194,9 +145,9 @@ public class ARActivity extends Activity implements CountDownCallback, ScrollGes
         int roundYawFix = Math.round(yawFix);
 
         if (roundYawFix > 0){
-            setAndShowTextView("+" + roundYawFix + "°");
+            setAndShowTextView("-" + roundYawFix + "°");
         }else {
-            setAndShowTextView(roundYawFix + "°");
+            setAndShowTextView("+" + Math.abs(roundYawFix) + "°");
         }
         renderer.setYawFix(roundYawFix);
     }

@@ -25,6 +25,9 @@ public class ElevationManagerGoogle implements ElevationManager {
 
     @Override
     public Location getNearestElevation(double latitude, double longitude) {
+
+        long startTime = System.currentTimeMillis();
+
         Location locationResult = new Location("");
         locationResult.setLatitude(latitude);
         locationResult.setLongitude(longitude);
@@ -41,6 +44,8 @@ public class ElevationManagerGoogle implements ElevationManager {
             e.printStackTrace();
         }
 
+        System.out.println("Total getNearestElevation elapsed time - " + String.valueOf(System.currentTimeMillis() - startTime) + "ms");
+
         return locationResult;
     }
 
@@ -51,6 +56,8 @@ public class ElevationManagerGoogle implements ElevationManager {
 
     @Override
     public List<Location> getNearestElevation(List<Location> locationList) {
+
+        long startTime = System.currentTimeMillis();
 
         String locations = "";
 
@@ -72,6 +79,8 @@ public class ElevationManagerGoogle implements ElevationManager {
                 l.setAccuracy(-1);
             }
         }
+
+        System.out.println("Total getNearestElevation elapsed time - " + String.valueOf(System.currentTimeMillis() - startTime) + "ms");
 
         return locationList;
     }

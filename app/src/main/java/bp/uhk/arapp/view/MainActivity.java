@@ -2,6 +2,7 @@ package bp.uhk.arapp.view;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -180,6 +181,10 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
 
             case R.id.action_change_language:
                 showChangeLanguageDialog();
+                return true;
+
+            case R.id.action_about:
+                showAboutDialog();
                 return true;
 
             default: return super.onOptionsItemSelected(item);
@@ -369,6 +374,8 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
                 builder.show();
             }
         });
+
+        // elevationManager = new Elevation49ManagerASC("/sdcard/Download/ARCASCII-parsed.asc"); testovací ASC
     }
 
     public boolean isTerrainMap() {
@@ -396,7 +403,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
     }
 
     private void showDataChoiceDialog(){
-        CharSequence dataSources[] = new CharSequence[] {"Google Elevation API", getString(R.string.czechia), getString(R.string.taiwan), "EUDEM Hradec Králové"};
+        CharSequence dataSources[] = new CharSequence[] {"Google Elevation API", getString(R.string.czechia), /*getString(R.string.taiwan),*/ "EUDEM Hradec Králové"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.choose_data_source));
@@ -409,7 +416,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
                 switch (which) {
                     case (0): dataSourceToLoad = ElevationDataProvider.GOOGLE_ELEVATION_API; break;
                     case (1): dataSourceToLoad = ElevationDataProvider.CZECHIA; break;
-                    case (2): dataSourceToLoad = ElevationDataProvider.TAIWAN; break;
+                    //case (2): dataSourceToLoad = ElevationDataProvider.TAIWAN; break;
                     case (3): dataSourceToLoad = ElevationDataProvider.HRADEC_KRALOVE; break;
                 }
 
@@ -454,10 +461,24 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
         builder.show();
     }
 
+    private void showAboutDialog() {
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_about);
+        dialog.show();
+    }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getString(R.string.cancel_download));
+
+        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                if (dataProvider != null) dataProvider.cancelDownload();
+            }
+        });
 
         if (intent.getAction().equals(DownloadNotificationBuilder.CANCEL_DOWNLOAD)) showCancelDialog();
     }

@@ -4,104 +4,99 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
+    <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:minHeight="420dp"
         android:orientation="vertical"
         android:stretchColumns="1">
 
-            <TableRow>
-                <TextView
-                    android:text="@string/latitude"
-                    android:padding="10dp" />
-                <TextView android:id="@+id/tv_latitude"
-                    android:text="--"
-                    android:gravity="end"
-                    android:padding="10dp" />
-            </TableRow>
+        <TableRow>
+            <TextView
+                android:text="@string/latitude"
+                android:padding="10dp" />
+            <TextView android:id="@+id/tv_latitude"
+                android:text="--"
+                android:gravity="end"
+                android:padding="10dp" />
+        </TableRow>
 
-            <TableRow>
-                <TextView
-                    android:text="@string/longitude"
-                    android:padding="10dp" />
-                <TextView android:id="@+id/tv_longitude"
-                    android:text="--"
-                    android:gravity="end"
-                    android:padding="10dp" />
-            </TableRow>
+        <TableRow>
+            <TextView
+                android:text="@string/longitude"
+                android:padding="10dp" />
+            <TextView android:id="@+id/tv_longitude"
+                android:text="--"
+                android:gravity="end"
+                android:padding="10dp" />
+        </TableRow>
 
-            <TableRow>
-                <TextView
-                    android:text="@string/altitude"
-                    android:padding="10dp" />
-                <TextView android:id="@+id/tv_elevation"
-                    android:text="--"
-                    android:gravity="end"
-                    android:padding="10dp" />
-            </TableRow>
+        <TableRow>
+            <TextView
+                android:text="@string/altitude"
+                android:padding="10dp" />
+            <TextView android:id="@+id/tv_elevation"
+                android:text="--"
+                android:gravity="end"
+                android:padding="10dp" />
+        </TableRow>
 
-            <TableRow>
-                <TextView
-                    android:text="@string/show_accuracy"
-                    android:padding="10dp" />
-                <TextView android:id="@+id/tv_accuracy"
-                    android:text="--"
-                    android:gravity="end"
-                    android:padding="10dp" />
-            </TableRow>
+        <TableRow>
+            <TextView
+                android:text="@string/show_accuracy"
+                android:padding="10dp" />
+            <TextView android:id="@+id/tv_accuracy"
+                android:text="--"
+                android:gravity="end"
+                android:padding="10dp" />
+        </TableRow>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="?android:attr/dividerVertical" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/dividerVertical" />
 
-            <Button android:id="@+id/button_refresh_overview"
-                android:text="@string/refresh"
-                android:textAllCaps="true"
-                android:layout_marginTop="-6dp"
-                android:layout_marginBottom="-6dp"
-                style="?attr/borderlessButtonStyle" />
+        <Button android:id="@+id/button_refresh_overview"
+            android:text="@string/refresh"
+            android:textAllCaps="true"
+            android:layout_marginTop="-6dp"
+            android:layout_marginBottom="-6dp"
+            style="?attr/borderlessButtonStyle" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="?android:attr/dividerVertical" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/dividerVertical" />
 
-            <TableRow>
-                <TextView
-                    android:text="@string/number_of_points"
-                    android:padding="10dp" />
-                <TextView android:id="@+id/tv_number_of_points"
-                    android:text="--"
-                    android:gravity="end"
-                    android:padding="10dp" />
-            </TableRow>
+        <TableRow>
+            <TextView
+                android:text="@string/number_of_points"
+                android:padding="10dp" />
+            <TextView android:id="@+id/tv_number_of_points"
+                android:text="--"
+                android:gravity="end"
+                android:padding="10dp" />
+        </TableRow>
 
-            <TableRow>
-                <TextView
-                    android:text="@string/length_of_track"
-                    android:padding="10dp" />
-                <TextView android:id="@+id/tv_distance"
-                    android:text="--"
-                    android:gravity="end"
-                    android:padding="10dp" />
-            </TableRow>
-
-        </TableLayout>
+        <TableRow>
+            <TextView
+                android:text="@string/length_of_track"
+                android:padding="10dp" />
+            <TextView android:id="@+id/tv_distance"
+                android:text="--"
+                android:gravity="end"
+                android:padding="10dp" />
+        </TableRow>
 
         <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/chart"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:minHeight="170dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"/>
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/chart"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp" />
 
-    </LinearLayout>
+    </TableLayout>
+
 
 </ScrollView>

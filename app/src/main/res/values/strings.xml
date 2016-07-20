@@ -52,4 +52,8 @@
     <string name="marker_snippet" translatable="false">%.1f m</string>
     <string name="marker_snippet_accuracy" translatable="false">%.1f m, %.1f m</string>
     <string name="remove_marker">Remove selected point?</string>
+    <string name="about">About</string>
+    <string name="about_author">Vladímir Tichý, 2016</string>
+    <string name="about_bp">This application was developed as part of my bachelor thesis.</string>
+    <string name="about_copyright" translatable="false">Produced using Copernicus data and information funded by the European Union - EU-DEM layers.</string>
 </resources>

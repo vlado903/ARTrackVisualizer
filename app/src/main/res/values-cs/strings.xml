@@ -45,4 +45,7 @@
     <string name="download_error">Při stahování nastala chyba</string>
     <string name="extracting_error">Chyba při rozbalování dat. Nedostatek místa?</string>
     <string name="remove_marker">Chcete bod smazat?</string>
+    <string name="about">O aplikaci</string>
+    <string name="about_author">Vladímir Tichý, 2016</string>
+    <string name="about_bp">Tato aplikace byla vyvinuta jako součást mé bakalářské práce.</string>
 </resources>
