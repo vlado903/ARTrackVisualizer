@@ -29,20 +29,10 @@ public class SensorProvider implements android.hardware.SensorEventListener {
     public void onSensorChanged(SensorEvent event) {
 
         if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
-            // Rotation vector to quaternion
-            float[] quat = new float[4];
-            SensorManager.getQuaternionFromVector(quat, event.values);
-
-            // Switch quaternion from [w,x,y,z] to [x,y,z,w]
-            float[] switchedQuat = new float[] {quat[1], quat[2], quat[3], quat[0]};
-
-            // Quaternion to rotation matrix
             float[] rotationMatrix = new float[16];
-            SensorManager.getRotationMatrixFromVector(rotationMatrix, switchedQuat);
+            SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values);
 
             float[] rotationMatrixRemapped = new float[16];
-
-            SensorManager.remapCoordinateSystem(rotationMatrix, SensorManager.AXIS_Z, SensorManager.AXIS_MINUS_X, rotationMatrixRemapped);
             SensorManager.remapCoordinateSystem(rotationMatrix, SensorManager.AXIS_Y, SensorManager.AXIS_MINUS_X, rotationMatrixRemapped);
 
             notifyRotationChanged(rotationMatrixRemapped);

@@ -43,7 +43,7 @@
 
         <TableRow>
             <TextView
-                android:text="@string/show_accuracy"
+                android:text="@string/accuracy"
                 android:padding="10dp" />
             <TextView android:id="@+id/tv_accuracy"
                 android:text="--"

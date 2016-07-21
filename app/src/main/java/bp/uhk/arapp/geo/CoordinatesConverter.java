@@ -9,7 +9,7 @@ import bp.uhk.arapp.ar.WorldRenderer;
  */
 public class CoordinatesConverter {
 
-    public static float MAX_FAR_VALUE = -1; //neboli interpoluj neustále
+    public static float MAX_FAR_VALUE = -1; //neboli přibližuj body neustále
 
     private double x, y, z;
     private double objectLat, objectLon, objectAlt, userLat, userLon, userAlt;
@@ -37,29 +37,31 @@ public class CoordinatesConverter {
 
 
     private synchronized void calculateCoordinates() {
-        calculateLocalCoordinates();
         convertCoordinatesToMeters();
         if (interpolationMode) zoomCoordinatesIfFar();
     }
 
-    private void calculateLocalCoordinates() {
-        if (userLon > 0){
-            x = objectLon - userLon;  //východní polokoule (neošetřuji situaci na greenwichi/rovníku)
-        }else{
-            x = userLon - objectLon;  //západní polokoule
-        }
-
-        if (userLat > 0){
-            y = objectLat - userLat;   //severní polokoule
-        }else{
-            y = userLat - objectLat;   //jižní polokoule
-        }
-    }
-
     private void convertCoordinatesToMeters() {
-        x = Math.signum(x) * 1000 * GeoTools.getDistance(0, x, 0, 0);
-        y = Math.signum(y) * 1000 * GeoTools.getDistance(y, 0, 0, 0);
+
+        double latSignum;
+        if (userLat > 0){
+            latSignum = Math.signum(objectLat - userLat);   //severní polokoule
+        }else{
+            latSignum = userLat - objectLat;                //jižní polokoule
+        }
+
+        double lonSignum;
+        if (userLon > 0){
+            lonSignum = Math.signum(objectLon - userLon);   //severní polokoule
+        }else{
+            lonSignum = Math.signum(userLon - objectLon);   //jižní polokoule
+        }
+
+        x = lonSignum * 1000 * GeoTools.getDistance(userLat, objectLon, userLat, userLon);
+        y = latSignum * 1000 * GeoTools.getDistance(objectLat, userLon, userLat, userLon);
         z = objectAlt - userAlt;
+
+        System.out.println("x: " + x + " y: " + y + " z: " + z);
     }
 
     private void zoomCoordinatesIfFar() {

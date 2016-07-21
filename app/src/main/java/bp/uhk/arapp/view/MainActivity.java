@@ -36,7 +36,6 @@ import java.util.List;
 import bp.uhk.arapp.R;
 import bp.uhk.arapp.ele.ElevationDataProvider;
 import bp.uhk.arapp.ele.ElevationManager;
-import bp.uhk.arapp.ele.ElevationManagerGoogle;
 import bp.uhk.arapp.geo.GeoTools;
 import bp.uhk.arapp.view.components.DownloadNotificationBuilder;
 import bp.uhk.arapp.view.components.SampleFragmentPagerAdapter;
@@ -298,7 +297,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
         new Thread(new Runnable() {
             @Override
             public void run() {
-                if (elevationManager != null && !(elevationManager instanceof ElevationManagerGoogle)){
+                if (elevationManager != null){
                     userLocation = elevationManager.getNearestElevation(location);
                 } else {
                     userLocation = location;
@@ -417,7 +416,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
                     case (0): dataSourceToLoad = ElevationDataProvider.GOOGLE_ELEVATION_API; break;
                     case (1): dataSourceToLoad = ElevationDataProvider.CZECHIA; break;
                     //case (2): dataSourceToLoad = ElevationDataProvider.TAIWAN; break;
-                    case (3): dataSourceToLoad = ElevationDataProvider.HRADEC_KRALOVE; break;
+                    case (2): dataSourceToLoad = ElevationDataProvider.HRADEC_KRALOVE; break;
                 }
 
                 loadElevationManager(dataSourceToLoad);
@@ -480,7 +479,8 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
             }
         });
 
-        if (intent.getAction().equals(DownloadNotificationBuilder.CANCEL_DOWNLOAD)) showCancelDialog();
+        String intentAction = intent.getAction();
+        if (intentAction != null && intentAction.equals(DownloadNotificationBuilder.CANCEL_DOWNLOAD)) showCancelDialog();
     }
 
     private void showCancelDialog() {

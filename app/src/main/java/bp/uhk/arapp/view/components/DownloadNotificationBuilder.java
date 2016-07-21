@@ -29,15 +29,14 @@ public class DownloadNotificationBuilder {
 
         builder = new NotificationCompat.Builder(activity);
 
-        associateCancelIntent();
-
         builder .setContentTitle(activity.getString(R.string.downloading_elevation))
                 .setContentText(activity.getString(R.string.download_in_progress))
                 .setOngoing(true)
                 .setSmallIcon(R.drawable.ic_stat_pin);
+        builder.setProgress(100, 0, false);
 
-               builder.setProgress(100, 0, false);
-               notificationManager.notify(id, builder.build());
+        associateCancelIntent();
+        notificationManager.notify(id, builder.build());
 
     }
 
@@ -49,22 +48,23 @@ public class DownloadNotificationBuilder {
 
     public void finish(){
         updateNotificationText(activity.getString(R.string.download_finished));
+        removeCancelIntent();
         associateOpenIntent();
     }
 
     public void cancel(){
-        notificationManager.cancel(0);
+        notificationManager.cancel(id);
     }
 
     public void showDownloadingError() {
         updateNotificationText(activity.getString(R.string.download_error));
+        removeCancelIntent();
         associateOpenIntent();
     }
 
     private void associateCancelIntent(){
         Intent intent = new Intent(activity, MainActivity.class);
         intent.setAction(CANCEL_DOWNLOAD);
-
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
         PendingIntent pendingIntent =
@@ -76,6 +76,19 @@ public class DownloadNotificationBuilder {
                 );
 
         builder.setContentIntent(pendingIntent);
+    }
+
+    private void removeCancelIntent() {
+        Intent intent = new Intent(activity, MainActivity.class);
+        intent.setAction(CANCEL_DOWNLOAD);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        PendingIntent.getActivity(
+                activity,
+                0,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        ).cancel();
     }
 
     private void updateNotificationText(String text){
@@ -88,7 +101,6 @@ public class DownloadNotificationBuilder {
 
     private void associateOpenIntent(){
         Intent intent = new Intent(activity, MainActivity.class);
-
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
         PendingIntent pendingIntent =
@@ -100,5 +112,6 @@ public class DownloadNotificationBuilder {
                 );
 
         builder.setContentIntent(pendingIntent);
+        notificationManager.notify(id, builder.build());
     }
 }

@@ -7,7 +7,7 @@
     <string name="longitude">Longitude</string>
     <string name="altitude">Altitude</string>
     <string name="number_of_points">Number of points</string>
-    <string name="length_of_track">Length of track</string>
+    <string name="length_of_track">Track length</string>
     <string name="refresh">Refresh</string>
 
     <string name="show_ar">Show AR</string>

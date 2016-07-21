@@ -1,5 +1,6 @@
 package bp.uhk.arapp.ar;
 
+import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.GLU;
 
@@ -77,12 +78,12 @@ public class WorldRenderer implements Renderer, SensorListener {
 
         for (WorldObject o : objects) {
 
+            o.draw(gl);
+
             gl.glMultMatrixf(rotationMatrix, 0);
-            gl.glRotatef(90, 1, 0, 0);              //korekce quaternionů, nemám tušení proč jsem to musel udělat
+            gl.glRotatef(90, 1, 0, 0);
 
             gl.glRotatef(yawFix, 0, 1.0f, 0);
-
-            o.draw(gl);
         }
 
     }
@@ -90,6 +91,8 @@ public class WorldRenderer implements Renderer, SensorListener {
     @Override
     public void rotationChanged(float[] rotationMatrix) {
         this.rotationMatrix = rotationMatrix;
+        float[] orientationVals = new float[3];
+        SensorManager.getOrientation(rotationMatrix, orientationVals);
     }
 
 
