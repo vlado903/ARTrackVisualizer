@@ -14,17 +14,20 @@ import java.util.List;
 /**
  * Created by vlado on 19.04.2016.
  */
-public class ElevationManagerGoogle implements ElevationManager {
+public class ElevationManagerGoogle implements ElevationManager
+{
 
     String url = "https://maps.googleapis.com/maps/api/elevation/json?locations=%s&key=%s";
     String key = "";
 
-    public ElevationManagerGoogle(String key){
+    public ElevationManagerGoogle(String key)
+    {
         this.key = key;
     }
 
     @Override
-    public Location getNearestElevation(double latitude, double longitude) {
+    public Location getNearestElevation(double latitude, double longitude)
+    {
 
         long startTime = System.currentTimeMillis();
 
@@ -36,11 +39,14 @@ public class ElevationManagerGoogle implements ElevationManager {
 
         String location = String.valueOf(latitude) + "," + String.valueOf(longitude);
 
-        try {
+        try
+        {
             JSONObject response = getJSONResponse(location);
             locationResult.setAltitude(response.getJSONArray("results").getJSONObject(0).getDouble("elevation"));
             locationResult.setAccuracy((float) response.getJSONArray("results").getJSONObject(0).getDouble("resolution"));
-        } catch (JSONException | IOException e) {
+        }
+        catch (JSONException | IOException e)
+        {
             e.printStackTrace();
         }
 
@@ -50,31 +56,39 @@ public class ElevationManagerGoogle implements ElevationManager {
     }
 
     @Override
-    public Location getNearestElevation(Location l) {
+    public Location getNearestElevation(Location l)
+    {
         return getNearestElevation(l.getLatitude(), l.getLongitude());
     }
 
     @Override
-    public List<Location> getNearestElevation(List<Location> locationList) {
+    public List<Location> getNearestElevation(List<Location> locationList)
+    {
 
         long startTime = System.currentTimeMillis();
 
         String locations = "";
 
-        for (int i = 0; i < locationList.size(); i++){
+        for (int i = 0; i < locationList.size(); i++)
+        {
             if (i != 0) locations += "|";
             locations += locationList.get(i).getLatitude() + "," + locationList.get(i).getLongitude();
         }
 
-        try {
+        try
+        {
             JSONObject response = getJSONResponse(locations);
-            for (int i = 0; i < locationList.size(); i++){
+            for (int i = 0; i < locationList.size(); i++)
+            {
                 locationList.get(i).setAltitude(response.getJSONArray("results").getJSONObject(i).getDouble("elevation"));
                 locationList.get(i).setAccuracy((float) response.getJSONArray("results").getJSONObject(i).getDouble("resolution"));
             }
-        } catch (IOException | JSONException e) {
+        }
+        catch (IOException | JSONException e)
+        {
             e.printStackTrace();
-            for (Location l : locationList){
+            for (Location l : locationList)
+            {
                 l.setAltitude(0);
                 l.setAccuracy(-1);
             }
@@ -85,14 +99,16 @@ public class ElevationManagerGoogle implements ElevationManager {
         return locationList;
     }
 
-    private JSONObject getJSONResponse(String locations) throws IOException, JSONException {
+    private JSONObject getJSONResponse(String locations) throws IOException, JSONException
+    {
         URL url = new URL(String.format(this.url, locations, key));
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(url.openConnection().getInputStream()));
 
         String json = "";
         String line;
-        while ((line = reader.readLine()) != null) {
+        while ((line = reader.readLine()) != null)
+        {
             json += line;
         }
 

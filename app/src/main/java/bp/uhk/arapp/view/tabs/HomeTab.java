@@ -25,7 +25,8 @@ import bp.uhk.arapp.ele.ElevationManager;
 import bp.uhk.arapp.geo.GeoTools;
 import bp.uhk.arapp.view.MainActivity;
 
-public class HomeTab extends Fragment {
+public class HomeTab extends Fragment
+{
 
     private View view;
 
@@ -40,7 +41,8 @@ public class HomeTab extends Fragment {
     private TextView tvDistance;
     private LineChart chart;
 
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
+    {
 
         view = inflater.inflate(R.layout.tab_home, container, false);
 
@@ -51,19 +53,24 @@ public class HomeTab extends Fragment {
     }
 
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
+    public void setUserVisibleHint(boolean isVisibleToUser)
+    {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser){
-            if(mainActivity != null) refreshOverview();
+        if (isVisibleToUser)
+        {
+            if (mainActivity != null) refreshOverview();
         }
     }
 
 
-    private void initViews() {
+    private void initViews()
+    {
         btRefreshOverview = (Button) view.findViewById(R.id.button_refresh_overview);
-        btRefreshOverview.setOnClickListener(new View.OnClickListener() {
+        btRefreshOverview.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 refreshOverview();
             }
         });
@@ -89,24 +96,31 @@ public class HomeTab extends Fragment {
         refreshChart();
     }
 
-    public void refreshOverview(){
+    public void refreshOverview()
+    {
         final Location[] currentLocation = {mainActivity.getCurrentLocation()};
         final ElevationManager em = mainActivity.getElevationManager();
 
-        if(currentLocation[0] != null){
+        if (currentLocation[0] != null)
+        {
 
             tvLatitude.setText(Double.toString(currentLocation[0].getLatitude()));
             tvLongitude.setText(Double.toString(currentLocation[0].getLongitude()));
 
-            if (em != null){
-                new Thread(new Runnable() {
+            if (em != null)
+            {
+                new Thread(new Runnable()
+                {
                     @Override
-                    public void run() {
+                    public void run()
+                    {
                         currentLocation[0] = em.getNearestElevation(currentLocation[0]);
 
-                        mainActivity.runOnUiThread(new Runnable() {
+                        mainActivity.runOnUiThread(new Runnable()
+                        {
                             @Override
-                            public void run() {
+                            public void run()
+                            {
                                 tvElevation.setText(String.format("%.1f m", currentLocation[0].getAltitude()));
                                 tvAccuracy.setText(String.format("%.1f m", currentLocation[0].getAccuracy()));
                             }
@@ -116,17 +130,19 @@ public class HomeTab extends Fragment {
             }
         }
 
-        tvDistance.setText(String.format("%.0f m", GeoTools.getTotalDistance(mainActivity.getPoints())*1000)); //převod na metry
+        tvDistance.setText(String.format("%.0f m", GeoTools.getTotalDistance(mainActivity.getPoints()) * 1000)); //převod na metry
         tvNumOfPoints.setText(String.valueOf(mainActivity.getPoints().size()));
 
         refreshChart();
     }
 
-    private void refreshChart() {
+    private void refreshChart()
+    {
         ArrayList<String> xVals = new ArrayList<>();
         ArrayList<Entry> yVals = new ArrayList<>();
 
-        for (int i = 0; i < MainActivity.points.size(); i++){
+        for (int i = 0; i < MainActivity.points.size(); i++)
+        {
             xVals.add(i + "");
             yVals.add(new Entry((float) MainActivity.points.get(i).getAltitude(), i));
         }
@@ -137,9 +153,11 @@ public class HomeTab extends Fragment {
         yValsSet.setValueTextSize(10);
         yValsSet.setValueTextColor(-1);
 
-        yValsSet.setValueFormatter(new ValueFormatter() {
+        yValsSet.setValueFormatter(new ValueFormatter()
+        {
             @Override
-            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler)
+            {
                 return Math.round(value) + "";
             }
         });

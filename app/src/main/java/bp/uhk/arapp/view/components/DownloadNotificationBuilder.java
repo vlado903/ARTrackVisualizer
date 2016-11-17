@@ -13,7 +13,8 @@ import bp.uhk.arapp.view.MainActivity;
 /**
  * Created by vlado on 20.04.2016.
  */
-public class DownloadNotificationBuilder {
+public class DownloadNotificationBuilder
+{
 
     public static final String CANCEL_DOWNLOAD = "CANCEL_DOWNLOAD";
 
@@ -22,14 +23,15 @@ public class DownloadNotificationBuilder {
     private Activity activity;
     private int id = 0;
 
-    public DownloadNotificationBuilder(Activity a){
+    public DownloadNotificationBuilder(Activity a)
+    {
         this.activity = a;
 
         notificationManager = (NotificationManager) activity.getSystemService(Context.NOTIFICATION_SERVICE);
 
         builder = new NotificationCompat.Builder(activity);
 
-        builder .setContentTitle(activity.getString(R.string.downloading_elevation))
+        builder.setContentTitle(activity.getString(R.string.downloading_elevation))
                 .setContentText(activity.getString(R.string.download_in_progress))
                 .setOngoing(true)
                 .setSmallIcon(R.drawable.ic_stat_pin);
@@ -40,29 +42,34 @@ public class DownloadNotificationBuilder {
 
     }
 
-    public void updateProgress(int progress, int speedKBs){
+    public void updateProgress(int progress, int speedKBs)
+    {
         builder.setProgress(100, progress, false);
         builder.setContentText(activity.getString(R.string.download_in_progress) + " - " + speedKBs + " KB/s");
         notificationManager.notify(id, builder.build());
     }
 
-    public void finish(){
+    public void finish()
+    {
         updateNotificationText(activity.getString(R.string.download_finished));
         removeCancelIntent();
         associateOpenIntent();
     }
 
-    public void cancel(){
+    public void cancel()
+    {
         notificationManager.cancel(id);
     }
 
-    public void showDownloadingError() {
+    public void showDownloadingError()
+    {
         updateNotificationText(activity.getString(R.string.download_error));
         removeCancelIntent();
         associateOpenIntent();
     }
 
-    private void associateCancelIntent(){
+    private void associateCancelIntent()
+    {
         Intent intent = new Intent(activity, MainActivity.class);
         intent.setAction(CANCEL_DOWNLOAD);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -78,7 +85,8 @@ public class DownloadNotificationBuilder {
         builder.setContentIntent(pendingIntent);
     }
 
-    private void removeCancelIntent() {
+    private void removeCancelIntent()
+    {
         Intent intent = new Intent(activity, MainActivity.class);
         intent.setAction(CANCEL_DOWNLOAD);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -91,15 +99,17 @@ public class DownloadNotificationBuilder {
         ).cancel();
     }
 
-    private void updateNotificationText(String text){
+    private void updateNotificationText(String text)
+    {
         builder.setContentText(text)
                 // Removes the progress bar
-                .setProgress(0,0,false)
+                .setProgress(0, 0, false)
                 .setOngoing(false);
         notificationManager.notify(id, builder.build());
     }
 
-    private void associateOpenIntent(){
+    private void associateOpenIntent()
+    {
         Intent intent = new Intent(activity, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 

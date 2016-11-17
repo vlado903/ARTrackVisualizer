@@ -16,7 +16,8 @@ import bp.uhk.arapp.view.util.DownloadAsyncTask;
 /**
  * Created by vlado on 20.04.2016.
  */
-public class ElevationDataProvider {
+public class ElevationDataProvider
+{
 
     public final static int GOOGLE_ELEVATION_API = 0;
     public final static int CZECHIA = 1;
@@ -35,27 +36,33 @@ public class ElevationDataProvider {
     private DownloadAsyncTask downloadAsyncTask;
     private Activity activity;
 
-    public ElevationDataProvider(int region, String rootPath){
+    public ElevationDataProvider(int region, String rootPath)
+    {
         filepath = rootPath;
         loadMatchingUrlAndFilepaths(region);
     }
 
-    public ElevationDataProvider(int dataSource, String rootPath, Activity activity){
+    public ElevationDataProvider(int dataSource, String rootPath, Activity activity)
+    {
         this.dataSource = dataSource;
-        if (dataSource != GOOGLE_ELEVATION_API){
+        if (dataSource != GOOGLE_ELEVATION_API)
+        {
             filepath = rootPath;
             loadMatchingUrlAndFilepaths(dataSource);
         }
         this.activity = activity;
     }
 
-    private boolean isDownloadedAlready(){
+    private boolean isDownloadedAlready()
+    {
         File f = new File(infoFilePath);
         return f.exists();
     }
 
-    private void loadMatchingUrlAndFilepaths(int dataSource){
-        switch (dataSource){
+    private void loadMatchingUrlAndFilepaths(int dataSource)
+    {
+        switch (dataSource)
+        {
             case CZECHIA:
                 url = CzURL;
                 filepath += "/CZ.zip";
@@ -75,39 +82,53 @@ public class ElevationDataProvider {
 
     }
 
-    public void getAsyncManager(final OnDataReadyListener listener){
-        if (dataSource == GOOGLE_ELEVATION_API){
+    public void getAsyncManager(final OnDataReadyListener listener)
+    {
+        if (dataSource == GOOGLE_ELEVATION_API)
+        {
             listener.onDataReady(new ElevationManagerGoogle(activity.getString(R.string.google_elevation_key)));
             return;
         }
-        if (!isDownloadedAlready()){
+        if (!isDownloadedAlready())
+        {
 
-            if (activity != null){
+            if (activity != null)
+            {
                 downloadAsyncTask = new DownloadAsyncTask(filepath, url, activity);
                 Toast.makeText(activity, activity.getString(R.string.temporary_mode), Toast.LENGTH_LONG).show();
-            } else {
+            }
+            else
+            {
                 downloadAsyncTask = new DownloadAsyncTask(filepath, url);
             }
 
-            downloadAsyncTask.setDownloadListener(downloadAsyncTask.new DownloadListener() {
+            downloadAsyncTask.setDownloadListener(downloadAsyncTask.new DownloadListener()
+            {
                 @Override
-                public void onDownloadFinished() {
+                public void onDownloadFinished()
+                {
                     extractData(listener);
                 }
             });
 
             downloadAsyncTask.execute();
-        } else{
+        }
+        else
+        {
             listener.onDataReady(new ElevationManagerBMP(infoFilePath));
         }
     }
 
-    private void extractData(final OnDataReadyListener listener) {
+    private void extractData(final OnDataReadyListener listener)
+    {
         downloadAsyncTask = null;
-        new Thread(new Runnable() {
+        new Thread(new Runnable()
+        {
             @Override
-            public void run() {
-                try {
+            public void run()
+            {
+                try
+                {
                     FileInputStream fis = new FileInputStream(filepath);
                     ZipInputStream zis = new ZipInputStream(fis);
                     ZipEntry zipEntry;
@@ -115,7 +136,8 @@ public class ElevationDataProvider {
                     File directory = new File(filepath.substring(0, filepath.lastIndexOf('.')));
                     if (!directory.exists()) directory.mkdirs();
 
-                    while ((zipEntry = zis.getNextEntry()) != null){
+                    while ((zipEntry = zis.getNextEntry()) != null)
+                    {
 
                         FileOutputStream fout = new FileOutputStream(directory.getAbsolutePath() + "/" + zipEntry.getName(), false);
 
@@ -133,7 +155,9 @@ public class ElevationDataProvider {
                     new File(filepath).delete();
 
                     listener.onDataReady(new ElevationManagerBMP(infoFilePath));
-                } catch (IOException e) {
+                }
+                catch (IOException e)
+                {
                     e.printStackTrace();
                     listener.onDataFailed();
                 }
@@ -141,12 +165,15 @@ public class ElevationDataProvider {
         }).start();
     }
 
-    public void cancelDownload() {
+    public void cancelDownload()
+    {
         if (downloadAsyncTask != null) downloadAsyncTask.stop();
     }
 
-    public abstract class OnDataReadyListener {
+    public abstract class OnDataReadyListener
+    {
         public abstract void onDataReady(ElevationManager em);
+
         public abstract void onDataFailed();
     }
 

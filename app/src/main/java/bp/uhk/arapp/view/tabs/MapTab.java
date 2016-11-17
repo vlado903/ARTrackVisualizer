@@ -23,7 +23,8 @@ import bp.uhk.arapp.R;
 import bp.uhk.arapp.view.MainActivity;
 
 
-public class MapTab extends SupportMapFragment implements OnMapReadyCallback {
+public class MapTab extends SupportMapFragment implements OnMapReadyCallback
+{
 
     private GoogleMap map;
     private LinkedList<Marker> markerList = new LinkedList<>();
@@ -37,28 +38,34 @@ public class MapTab extends SupportMapFragment implements OnMapReadyCallback {
     private int draggedLocationPosition;
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
+    public void onActivityCreated(Bundle savedInstanceState)
+    {
         mainActivity = (MainActivity) getActivity();
         super.onActivityCreated(savedInstanceState);
     }
 
     @Override
-    public void onResume() {
+    public void onResume()
+    {
         super.onResume();
-        if (map == null) {
+        if (map == null)
+        {
             getMapAsync(this);
         }
     }
 
     // vytvoření/smazání bodu při dlouhém podržení
-    private void setUpMap() {
+    private void setUpMap()
+    {
         //noinspection MissingPermission
         map.setMyLocationEnabled(true);
         useTerrainMap(mainActivity.isTerrainMap());
 
-        map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+        map.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener()
+        {
             @Override
-            public void onMapLongClick(final LatLng latLng) {
+            public void onMapLongClick(final LatLng latLng)
+            {
                 final Marker marker = map.addMarker(new MarkerOptions()
                         .position(latLng)
                         .draggable(true));
@@ -68,9 +75,11 @@ public class MapTab extends SupportMapFragment implements OnMapReadyCallback {
 
                 refreshLine();
 
-                new Thread(new Runnable() {
+                new Thread(new Runnable()
+                {
                     @Override
-                    public void run() {
+                    public void run()
+                    {
                         Location location = new Location("");
 
                         location.setLatitude(latLng.latitude);
@@ -84,13 +93,17 @@ public class MapTab extends SupportMapFragment implements OnMapReadyCallback {
             }
         });
 
-        map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
+        map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener()
+        {
             @Override
-            public void onMarkerDragStart(Marker marker) {
+            public void onMarkerDragStart(Marker marker)
+            {
                 double latitude = markerOrigLat.get(marker);  //potřebuju načíst originální zeměpisnou délku, drag totiž marker posune!
 
-                for (draggedLocationPosition = 0; draggedLocationPosition < mainActivity.getPoints().size(); draggedLocationPosition++) {
-                    if (mainActivity.getPoints().get(draggedLocationPosition).getLatitude() == latitude) {
+                for (draggedLocationPosition = 0; draggedLocationPosition < mainActivity.getPoints().size(); draggedLocationPosition++)
+                {
+                    if (mainActivity.getPoints().get(draggedLocationPosition).getLatitude() == latitude)
+                    {
                         draggedLocation = mainActivity.getPoints().get(draggedLocationPosition);
                         mainActivity.getPoints().remove(draggedLocationPosition);
                         return;
@@ -99,23 +112,29 @@ public class MapTab extends SupportMapFragment implements OnMapReadyCallback {
             }
 
             @Override
-            public void onMarkerDrag(Marker marker) {
+            public void onMarkerDrag(Marker marker)
+            {
 
             }
 
             @Override
-            public void onMarkerDragEnd(Marker marker) {
+            public void onMarkerDragEnd(Marker marker)
+            {
                 draggedLocation.setLatitude(marker.getPosition().latitude);
                 draggedLocation.setLongitude(marker.getPosition().longitude);
 
-                new Thread(new Runnable() {
+                new Thread(new Runnable()
+                {
                     @Override
-                    public void run() {
+                    public void run()
+                    {
                         draggedLocation = mainActivity.getElevationManager().getNearestElevation(draggedLocation);
                         mainActivity.getPoints().add(draggedLocationPosition, draggedLocation);
-                        mainActivity.runOnUiThread(new Runnable() {
+                        mainActivity.runOnUiThread(new Runnable()
+                        {
                             @Override
-                            public void run() {
+                            public void run()
+                            {
                                 refreshMarkersAndLine();
                             }
                         });
@@ -124,32 +143,40 @@ public class MapTab extends SupportMapFragment implements OnMapReadyCallback {
             }
         });
 
-        map.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+        map.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener()
+        {
             @Override
-            public void onInfoWindowClick(Marker marker) {
+            public void onInfoWindowClick(Marker marker)
+            {
                 showRemoveMarkerDialog(marker);
             }
         });
     }
 
-    public void clearMap() {
-        for (Marker m : markerList) {
+    public void clearMap()
+    {
+        for (Marker m : markerList)
+        {
             m.remove();
         }
         markerList.clear();
         markerOrigLat.clear();
 
-        if (line != null) {
+        if (line != null)
+        {
             line.remove();
             line = null;
         }
     }
 
-    public void refreshMarkersAndLine() {
+    public void refreshMarkersAndLine()
+    {
         clearMap();
 
-        if (map != null) {
-            for (final Location location : mainActivity.getPoints()) {
+        if (map != null)
+        {
+            for (final Location location : mainActivity.getPoints())
+            {
                 final Marker marker = map.addMarker(new MarkerOptions()
                         .position(new LatLng(location.getLatitude(), location.getLongitude()))
                         .draggable(true));
@@ -163,44 +190,59 @@ public class MapTab extends SupportMapFragment implements OnMapReadyCallback {
         }
     }
 
-    public void useTerrainMap(boolean terrainMap) {
-        if (map != null) {
-            if (terrainMap) {
+    public void useTerrainMap(boolean terrainMap)
+    {
+        if (map != null)
+        {
+            if (terrainMap)
+            {
                 map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-            } else {
+            }
+            else
+            {
                 map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
             }
         }
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(GoogleMap googleMap)
+    {
         map = googleMap;
         setUpMap();
         refreshMarkersAndLine();
     }
 
-    private void setMarkerTitle(final Marker marker, final Location l) {
-        mainActivity.runOnUiThread(new Runnable() {
+    private void setMarkerTitle(final Marker marker, final Location l)
+    {
+        mainActivity.runOnUiThread(new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 marker.setTitle(String.format(getString(R.string.marker_title), markerList.size()));
-                if (mainActivity.isShowAccuracy()){
+                if (mainActivity.isShowAccuracy())
+                {
                     marker.setSnippet(String.format(getString(R.string.marker_snippet_accuracy), l.getAltitude(), l.getAccuracy()));
-                } else {
+                }
+                else
+                {
                     marker.setSnippet(String.format(getString(R.string.marker_snippet), l.getAltitude()));
                 }
             }
         });
     }
 
-    private void refreshLine() {
+    private void refreshLine()
+    {
         LinkedList<LatLng> markerLocations = new LinkedList<>();
-        for (Marker m : markerList) {
+        for (Marker m : markerList)
+        {
             markerLocations.add(m.getPosition());
         }
 
-        if (markerList != null && markerList.size() > 0) {
+        if (markerList != null && markerList.size() > 0)
+        {
             if (line == null)
                 line = map.addPolyline(new PolylineOptions().add(markerList.getFirst().getPosition()));
             line.setWidth(6);
@@ -209,25 +251,33 @@ public class MapTab extends SupportMapFragment implements OnMapReadyCallback {
         }
     }
 
-    private void showRemoveMarkerDialog(final Marker marker) {
+    private void showRemoveMarkerDialog(final Marker marker)
+    {
         AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
         builder.setMessage(getString(R.string.remove_marker));
 
-        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
+        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener()
+        {
+            public void onClick(DialogInterface dialog, int id)
+            {
                 removeMarkerAndPoint(marker);
             }
         });
-        builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
+        builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener()
+        {
+            public void onClick(DialogInterface dialog, int id)
+            {
             }
         });
         builder.show();
     }
 
-    private void removeMarkerAndPoint(Marker marker){
-        for (Location l : mainActivity.getPoints()) {
-            if (l.getLatitude() == marker.getPosition().latitude && l.getLongitude() == marker.getPosition().longitude) {
+    private void removeMarkerAndPoint(Marker marker)
+    {
+        for (Location l : mainActivity.getPoints())
+        {
+            if (l.getLatitude() == marker.getPosition().latitude && l.getLongitude() == marker.getPosition().longitude)
+            {
                 mainActivity.getPoints().remove(l);
                 marker.remove();
 

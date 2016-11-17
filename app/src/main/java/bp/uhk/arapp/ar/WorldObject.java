@@ -14,43 +14,41 @@ import bp.uhk.arapp.view.MainActivity;
 /**
  * Created by vlado on 04.03.2016.
  */
-public class WorldObject {
+public class WorldObject
+{
 
+    public float x, y, z;
     private FloatBuffer mVertexBuffer;
     private FloatBuffer mColorBuffer;
     private ByteBuffer mIndexBuffer;
-
     private Location userLocation;
-
     private CoordinatesConverter coordinatesConverter;
-
     private double lastLatitude;
-
-    public float x, y, z;
-
     private float rotation = 0;
 
     private float vertices[] = {
-            1, 3,-1,   -1, 3,-1,
-            1, 3, 1,   -1, 3, 1,
+            1, 3, -1, -1, 3, -1,
+            1, 3, 1, -1, 3, 1,
             0, 0, 0
     };
     private float colors[] = {
-            0.5f,   0.5f,   0.5f,   1,          1,      1,      1,      1,
-            1,      1,      1,      1,          0.5f,   0.5f,   0.5f,   1,
-            0.5f,   0.5f,   0.5f,   1
+            0.5f, 0.5f, 0.5f, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 0.5f, 0.5f, 0.5f, 1,
+            0.5f, 0.5f, 0.5f, 1
     };
 
     private byte indices[] = {
-            0,1,2,    1,2,3,
-            0,2,4,    2,3,4,
-            1,3,4,    0,1,4
+            0, 1, 2, 1, 2, 3,
+            0, 2, 4, 2, 3, 4,
+            1, 3, 4, 0, 1, 4
     };
 
-    public WorldObject(Location objectLocation, boolean midpoint) {
+    public WorldObject(Location objectLocation, boolean midpoint)
+    {
 
-        if (midpoint){
-            for (int i = 0; i < vertices.length; i++) vertices[i] = vertices[i]/2;
+        if (midpoint)
+        {
+            for (int i = 0; i < vertices.length; i++) vertices[i] = vertices[i] / 2;
         }
 
         userLocation = MainActivity.userLocation;
@@ -75,9 +73,11 @@ public class WorldObject {
 
     }
 
-    public void draw(GL10 gl) {
+    public void draw(GL10 gl)
+    {
 
-        if (lastLatitude != userLocation.getLatitude()){
+        if (lastLatitude != userLocation.getLatitude())
+        {
 
             coordinatesConverter.setUserLocation(userLocation);
 
@@ -96,7 +96,8 @@ public class WorldObject {
         gl.glLoadIdentity();
     }
 
-    private void render(GL10 gl) {
+    private void render(GL10 gl)
+    {
         //vykreslovat přední stranu ploch
         gl.glFrontFace(GL10.GL_CW);
 
@@ -115,17 +116,20 @@ public class WorldObject {
         gl.glDisableClientState(GL10.GL_COLOR_ARRAY);
     }
 
-    private void loadCoordinates(float[] coordinatesArray) {
+    private void loadCoordinates(float[] coordinatesArray)
+    {
         x = coordinatesArray[0];      //plusové hodnoty směřují po ose x doprava
         y = coordinatesArray[1];      //plusové hodnoty směřují po ose y nahoru
         z = coordinatesArray[2];      //nadmořská výška + opravná položka
     }
 
-    public CoordinatesConverter getCoordinatesConverter() {
+    public CoordinatesConverter getCoordinatesConverter()
+    {
         return coordinatesConverter;
     }
 
-    public void refreshCoordinates(){
+    public void refreshCoordinates()
+    {
         coordinatesConverter.setUserLocation(userLocation);
         loadCoordinates(coordinatesConverter.getCoordinates());
         lastLatitude = userLocation.getLatitude();

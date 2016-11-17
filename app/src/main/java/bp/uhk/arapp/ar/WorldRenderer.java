@@ -15,7 +15,8 @@ import bp.uhk.arapp.view.MainActivity;
 /**
  * Created by vlado on 04.03.2016.
  */
-public class WorldRenderer implements Renderer, SensorListener {
+public class WorldRenderer implements Renderer, SensorListener
+{
 
     public static float Z_FAR_VALUE = 700f;
 
@@ -26,7 +27,8 @@ public class WorldRenderer implements Renderer, SensorListener {
 
     private List<WorldObject> objects = new ArrayList<>();
 
-    public WorldRenderer(SensorProvider sensorProvider){
+    public WorldRenderer(SensorProvider sensorProvider)
+    {
         sensorProvider.addOrientationListener(this);
 
         objects.addAll(WorldObjectFactory.buildPoints(MainActivity.points));
@@ -36,11 +38,11 @@ public class WorldRenderer implements Renderer, SensorListener {
         rotationMatrix[5] = 1;
         rotationMatrix[10] = 1;
         rotationMatrix[15] = 1;
-
     }
-    
+
     @Override
-    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+    public void onSurfaceCreated(GL10 gl, EGLConfig config)
+    {
 
         gl.glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
         // Depth buffer setup.
@@ -54,7 +56,8 @@ public class WorldRenderer implements Renderer, SensorListener {
     }
 
     @Override
-    public void onSurfaceChanged(GL10 gl, int width, int height) {
+    public void onSurfaceChanged(GL10 gl, int width, int height)
+    {
         // Sets the current view port to the new size.
         gl.glViewport(0, 0, width, height);
         // Select the projection matrix
@@ -73,10 +76,12 @@ public class WorldRenderer implements Renderer, SensorListener {
     }
 
     @Override
-    public void onDrawFrame(GL10 gl) {
+    public void onDrawFrame(GL10 gl)
+    {
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 
-        for (WorldObject o : objects) {
+        for (WorldObject o : objects)
+        {
 
             o.draw(gl);
 
@@ -89,25 +94,30 @@ public class WorldRenderer implements Renderer, SensorListener {
     }
 
     @Override
-    public void rotationChanged(float[] rotationMatrix) {
+    public void rotationChanged(float[] rotationMatrix)
+    {
         this.rotationMatrix = rotationMatrix;
         float[] orientationVals = new float[3];
         SensorManager.getOrientation(rotationMatrix, orientationVals);
     }
 
 
-    public void setYawFix(float yawFix) {
+    public void setYawFix(float yawFix)
+    {
         this.yawFix = yawFix;
     }
 
-    public void setElevationFix(float elevationFix){
-        for (WorldObject o : objects){
+    public void setElevationFix(float elevationFix)
+    {
+        for (WorldObject o : objects)
+        {
             o.getCoordinatesConverter().setElevationFix(elevationFix);
             o.refreshCoordinates();
         }
     }
 
-    public void setFov(float fov) {
+    public void setFov(float fov)
+    {
         this.fov = fov;
     }
 }

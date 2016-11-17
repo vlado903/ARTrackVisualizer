@@ -19,7 +19,8 @@ import bp.uhk.arapp.geo.GeoTools;
 /**
  * Created by vlado on 28.02.2016.
  */
-public class ElevationManagerBMP implements ElevationManager{
+public class ElevationManagerBMP implements ElevationManager
+{
 
     ArrayList<String> paths = new ArrayList<>();
     NavigableSet<Double> borders = new TreeSet<>();
@@ -39,42 +40,48 @@ public class ElevationManagerBMP implements ElevationManager{
     int pixelHeight;
     int numOfFiles;
 
-    public ElevationManagerBMP(String infoFilePath){
+    public ElevationManagerBMP(String infoFilePath)
+    {
 
         File infoFile = new File(infoFilePath);
-        try {
+        try
+        {
             BufferedReader bfr = new BufferedReader(new InputStreamReader(new FileInputStream(infoFile)));
-            columns = Integer.parseInt(bfr.readLine().substring(13))  -1;
-            rows = Integer.parseInt(bfr.readLine().substring(13))     -1;
+            columns = Integer.parseInt(bfr.readLine().substring(13)) - 1;
+            rows = Integer.parseInt(bfr.readLine().substring(13)) - 1;
             X_MIN = Double.parseDouble(bfr.readLine().substring(13));
             Y_MIN = Double.parseDouble(bfr.readLine().substring(13));
             cellSize = Double.parseDouble(bfr.readLine().substring(13));
             noDataValue = bfr.readLine().substring(13);
             pixelHeight = Integer.parseInt(bfr.readLine().substring(13));
             numOfFiles = Integer.parseInt(bfr.readLine().substring(13));
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             e.printStackTrace();
         }
 
-        Y_MAX = Y_MIN + cellSize*rows;
-        X_MAX = X_MIN + cellSize*columns;
+        Y_MAX = Y_MIN + cellSize * rows;
+        X_MAX = X_MIN + cellSize * columns;
 
         int lastImgHeight = rows % pixelHeight;
-        double firstBorder = Y_MIN + cellSize*lastImgHeight;
+        double firstBorder = Y_MIN + cellSize * lastImgHeight;
         borders.add(Y_MIN);
         borders.add(firstBorder);
 
-        for (int i = 0; i < numOfFiles; i++){
+        for (int i = 0; i < numOfFiles; i++)
+        {
             String directoryPath = infoFile.getParent();
             String fileName = infoFile.getName().substring(0, infoFile.getName().indexOf("."));
             paths.add(directoryPath + "/" + fileName + i + ".png");
 
-            if (i > 1) borders.add(firstBorder + (i-1) * cellSize * pixelHeight);
+            if (i > 1) borders.add(firstBorder + (i - 1) * cellSize * pixelHeight);
         }
     }
 
     @Override
-    public Location getNearestElevation(double lat, double lon) {
+    public Location getNearestElevation(double lat, double lon)
+    {
 
         Location locationResult = new Location("");
         locationResult.setLatitude(lat);
@@ -91,26 +98,32 @@ public class ElevationManagerBMP implements ElevationManager{
 
         int fileNo = borderArray.indexOf(closestBorder);
 
-        if (!filePath.equals(paths.get(fileNo)) || eleBitmap == null){
+        if (!filePath.equals(paths.get(fileNo)) || eleBitmap == null)
+        {
             filePath = paths.get(fileNo);
             eleBitmap = BitmapFactory.decodeFile(filePath);
         }
 
         double fileLatitude = closestBorder;
-        int indexY = eleBitmap.getHeight()-1;
-        double halfCellSize = cellSize/2;
+        int indexY = eleBitmap.getHeight() - 1;
+        double halfCellSize = cellSize / 2;
 
-        while (lat > fileLatitude && lat - fileLatitude > halfCellSize){
+        while (lat > fileLatitude && lat - fileLatitude > halfCellSize)
+        {
             fileLatitude += cellSize;
             indexY--;
         }
 
-        if (indexY == -1){ // CHECK FOR BORDER
-            if (fileNo > 0){
+        if (indexY == -1)
+        { // CHECK FOR BORDER
+            if (fileNo > 0)
+            {
                 fileNo--;
                 eleBitmap = BitmapFactory.decodeFile(paths.get(fileNo));
-                indexY = eleBitmap.getHeight()-1;
-            } else{
+                indexY = eleBitmap.getHeight() - 1;
+            }
+            else
+            {
                 return locationResult;
             }
         }
@@ -118,31 +131,34 @@ public class ElevationManagerBMP implements ElevationManager{
         double fileLongitude = X_MIN;
         int indexX = 0;
 
-        while (lon - fileLongitude > halfCellSize){
+        while (lon - fileLongitude > halfCellSize)
+        {
             fileLongitude += cellSize;
             indexX++;
         }
 
         //System.out.println(String.format("fileNo: %s   indexY: %s   bitmapHeight: %s   latitude: %s   fileLatitude: %s   closestBorder: %s", fileNo, indexY, eleBitmap.getHeight(), latitude, fileLatitude, closestBorder));
 
-        int i = eleBitmap.getPixel(indexX, indexY)<<8;
-        double result = (double) i/100;
+        int i = eleBitmap.getPixel(indexX, indexY) << 8;
+        double result = (double) i / 100;
 
         System.out.println("Total getNearestElevation elapsed time - " + String.valueOf(System.currentTimeMillis() - startTime) + "ms");
 
         locationResult.setAltitude(result);
-        locationResult.setAccuracy(Math.round(GeoTools.getDistance(lat, lon, fileLatitude, fileLongitude)*1000));
+        locationResult.setAccuracy(Math.round(GeoTools.getDistance(lat, lon, fileLatitude, fileLongitude) * 1000));
 
         return locationResult;
     }
 
     @Override
-    public Location getNearestElevation(Location l) {
+    public Location getNearestElevation(Location l)
+    {
         return getNearestElevation(l.getLatitude(), l.getLongitude());
     }
 
     @Override
-    public List<Location> getNearestElevation(List<Location> locationList) {
+    public List<Location> getNearestElevation(List<Location> locationList)
+    {
         List<Location> locationResultList = new ArrayList<>();
         for (Location l : locationList) locationResultList.add(getNearestElevation(l));
         return locationResultList;

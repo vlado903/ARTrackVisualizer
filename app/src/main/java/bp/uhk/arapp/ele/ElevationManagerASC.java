@@ -10,7 +10,8 @@ import java.util.List;
 /**
  * Created by vlado on 17.01.2016.
  */
-public class ElevationManagerASC implements ElevationManager {
+public class ElevationManagerASC implements ElevationManager
+{
 
     double X_MIN;
     double Y_MIN;  //levý dolní roh
@@ -25,15 +26,17 @@ public class ElevationManagerASC implements ElevationManager {
 
     RandomAccessFile randomAccessFile;
 
-    public ElevationManagerASC(String filePathToASC){
+    public ElevationManagerASC(String filePathToASC)
+    {
 
         filepath = filePathToASC;
 
-        try {
+        try
+        {
             randomAccessFile = new RandomAccessFile(filepath, "r");
 
-            columnsY = Integer.parseInt(randomAccessFile.readLine().substring(13))  -1;
-            rowsX = Integer.parseInt(randomAccessFile.readLine().substring(13))     -1;
+            columnsY = Integer.parseInt(randomAccessFile.readLine().substring(13)) - 1;
+            rowsX = Integer.parseInt(randomAccessFile.readLine().substring(13)) - 1;
             X_MIN = Double.parseDouble(randomAccessFile.readLine().substring(13));
             Y_MIN = Double.parseDouble(randomAccessFile.readLine().substring(13));
             cellSize = Double.parseDouble(randomAccessFile.readLine().substring(13));
@@ -41,14 +44,17 @@ public class ElevationManagerASC implements ElevationManager {
 
             dataStart = randomAccessFile.getChannel().position();
 
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             e.printStackTrace();
         }
 
     }
 
     @Override
-    public Location getNearestElevation(double lat, double lon) {
+    public Location getNearestElevation(double lat, double lon)
+    {
 
         Location locationResult = new Location("");
         locationResult.setLatitude(lat);
@@ -63,14 +69,16 @@ public class ElevationManagerASC implements ElevationManager {
 
         if (lat < Y_MIN || lon < X_MIN) return locationResult;
 
-        while(lat > Y_MIN){
+        while (lat > Y_MIN)
+        {
             lat -= cellSize;
             row--;
         }
 
         if (row < 0) return locationResult;
 
-        while(lon > X_MIN){
+        while (lon > X_MIN)
+        {
             lon -= cellSize;
             column++;
         }
@@ -78,15 +86,19 @@ public class ElevationManagerASC implements ElevationManager {
         if (column > columnsY) return locationResult;
 
         String elevation = "";
-        try {
+        try
+        {
             if (randomAccessFile == null) new RandomAccessFile(filepath, "r");
 
             randomAccessFile.seek(dataStart + row * 128192 + column * 5);
 
-            for (int i = 0; i < 5; i++){
+            for (int i = 0; i < 5; i++)
+            {
                 elevation += (char) randomAccessFile.read();
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             e.printStackTrace();
         }
 
@@ -97,12 +109,14 @@ public class ElevationManagerASC implements ElevationManager {
     }
 
     @Override
-    public Location getNearestElevation(Location l) {
+    public Location getNearestElevation(Location l)
+    {
         return getNearestElevation(l.getLatitude(), l.getLongitude());
     }
 
     @Override
-    public List<Location> getNearestElevation(List<Location> locationList) {
+    public List<Location> getNearestElevation(List<Location> locationList)
+    {
         List<Location> locationResultList = new ArrayList<>();
         for (Location l : locationList) locationResultList.add(getNearestElevation(l));
         return locationResultList;

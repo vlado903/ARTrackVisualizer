@@ -12,43 +12,55 @@
         android:stretchColumns="1">
 
         <TableRow>
+
             <TextView
-                android:text="@string/latitude"
-                android:padding="10dp" />
-            <TextView android:id="@+id/tv_latitude"
-                android:text="--"
+                android:padding="10dp"
+                android:text="@string/latitude" />
+
+            <TextView
+                android:id="@+id/tv_latitude"
                 android:gravity="end"
-                android:padding="10dp" />
+                android:padding="10dp"
+                android:text="--" />
         </TableRow>
 
         <TableRow>
+
             <TextView
-                android:text="@string/longitude"
-                android:padding="10dp" />
-            <TextView android:id="@+id/tv_longitude"
-                android:text="--"
+                android:padding="10dp"
+                android:text="@string/longitude" />
+
+            <TextView
+                android:id="@+id/tv_longitude"
                 android:gravity="end"
-                android:padding="10dp" />
+                android:padding="10dp"
+                android:text="--" />
         </TableRow>
 
         <TableRow>
+
             <TextView
-                android:text="@string/altitude"
-                android:padding="10dp" />
-            <TextView android:id="@+id/tv_elevation"
-                android:text="--"
+                android:padding="10dp"
+                android:text="@string/altitude" />
+
+            <TextView
+                android:id="@+id/tv_elevation"
                 android:gravity="end"
-                android:padding="10dp" />
+                android:padding="10dp"
+                android:text="--" />
         </TableRow>
 
         <TableRow>
+
             <TextView
-                android:text="@string/accuracy"
-                android:padding="10dp" />
-            <TextView android:id="@+id/tv_accuracy"
-                android:text="--"
+                android:padding="10dp"
+                android:text="@string/accuracy" />
+
+            <TextView
+                android:id="@+id/tv_accuracy"
                 android:gravity="end"
-                android:padding="10dp" />
+                android:padding="10dp"
+                android:text="--" />
         </TableRow>
 
         <View
@@ -56,12 +68,13 @@
             android:layout_height="1dp"
             android:background="?android:attr/dividerVertical" />
 
-        <Button android:id="@+id/button_refresh_overview"
-            android:text="@string/refresh"
-            android:textAllCaps="true"
-            android:layout_marginTop="-6dp"
+        <Button
+            android:id="@+id/button_refresh_overview"
+            style="?attr/borderlessButtonStyle"
             android:layout_marginBottom="-6dp"
-            style="?attr/borderlessButtonStyle" />
+            android:layout_marginTop="-6dp"
+            android:text="@string/refresh"
+            android:textAllCaps="true" />
 
         <View
             android:layout_width="match_parent"
@@ -69,32 +82,38 @@
             android:background="?android:attr/dividerVertical" />
 
         <TableRow>
+
             <TextView
-                android:text="@string/number_of_points"
-                android:padding="10dp" />
-            <TextView android:id="@+id/tv_number_of_points"
-                android:text="--"
+                android:padding="10dp"
+                android:text="@string/number_of_points" />
+
+            <TextView
+                android:id="@+id/tv_number_of_points"
                 android:gravity="end"
-                android:padding="10dp" />
+                android:padding="10dp"
+                android:text="--" />
         </TableRow>
 
         <TableRow>
+
             <TextView
-                android:text="@string/length_of_track"
-                android:padding="10dp" />
-            <TextView android:id="@+id/tv_distance"
-                android:text="--"
+                android:padding="10dp"
+                android:text="@string/length_of_track" />
+
+            <TextView
+                android:id="@+id/tv_distance"
                 android:gravity="end"
-                android:padding="10dp" />
+                android:padding="10dp"
+                android:text="--" />
         </TableRow>
 
         <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/chart"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:id="@+id/chart"
             android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp" />
+            android:layout_marginRight="15dp"
+            android:layout_weight="1" />
 
     </TableLayout>
 

@@ -8,7 +8,8 @@ import java.util.List;
  * Created by vlado on 17.01.2016.
  */
 
-public interface ElevationManager {
+public interface ElevationManager
+{
 
     Location getNearestElevation(double latitude, double longitude);
 

@@ -12,23 +12,26 @@ import java.util.List;
 /**
  * Created by vlado on 11.03.2016.
  */
-public class SensorProvider implements android.hardware.SensorEventListener {
+public class SensorProvider implements android.hardware.SensorEventListener
+{
 
+    List<SensorListener> sensorListeners = new ArrayList<>();
     private SensorManager sensorManager;
     private Sensor rotationVectorSensor;
 
-    List<SensorListener> sensorListeners = new ArrayList<>();
 
-
-    public SensorProvider(Activity activity){
+    public SensorProvider(Activity activity)
+    {
         sensorManager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
         rotationVectorSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
     }
 
     @Override
-    public void onSensorChanged(SensorEvent event) {
+    public void onSensorChanged(SensorEvent event)
+    {
 
-        if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
+        if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR)
+        {
             float[] rotationMatrix = new float[16];
             SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values);
 
@@ -39,25 +42,30 @@ public class SensorProvider implements android.hardware.SensorEventListener {
         }
     }
 
-    private void notifyRotationChanged(float[] rotationMatrix) {
+    private void notifyRotationChanged(float[] rotationMatrix)
+    {
         for (SensorListener sensorListener : sensorListeners)   //notify listeners
             sensorListener.rotationChanged(rotationMatrix);
     }
 
     @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+    public void onAccuracyChanged(Sensor sensor, int accuracy)
+    {
 
     }
 
-    public void start() {
+    public void start()
+    {
         sensorManager.registerListener(this, rotationVectorSensor, SensorManager.SENSOR_DELAY_GAME);
     }
 
-    public void stop() {
+    public void stop()
+    {
         sensorManager.unregisterListener(this);
     }
 
-    public void addOrientationListener(SensorListener sensorListener) {
+    public void addOrientationListener(SensorListener sensorListener)
+    {
         sensorListeners.add(sensorListener);
     }
 }

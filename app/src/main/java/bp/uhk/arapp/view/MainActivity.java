@@ -45,16 +45,15 @@ import bp.uhk.arapp.view.util.LocaleHelper;
 import bp.uhk.arapp.view.util.PermissionInterpreter;
 
 public class MainActivity extends AppCompatActivity implements ConnectionCallbacks,
-        OnConnectionFailedListener, LocationListener, OnRequestPermissionsResultCallback {
-
-    public static List<Location> points = new ArrayList<>();
-    public static List<Location> midPoints = new ArrayList<>();
-    public static Location userLocation;
+        OnConnectionFailedListener, LocationListener, OnRequestPermissionsResultCallback
+{
 
     private static final int REQUEST_CAMERA = 0;
     private static final int WRITE_EXTERNAL_STORAGE = 1;
     private static final int ACCESS_FINE_LOCATION = 2;
-
+    public static List<Location> points = new ArrayList<>();
+    public static List<Location> midPoints = new ArrayList<>();
+    public static Location userLocation;
     private boolean terrainMap, pointMode, showAccuracy;
     private int dataSource;
 
@@ -66,7 +65,8 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
     private ElevationManager elevationManager;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
 
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
@@ -87,14 +87,16 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
         checkPermissionsAndProceed();
     }
 
-    private void proceedAfterPermissionsGranted() {
+    private void proceedAfterPermissionsGranted()
+    {
         loadViewPager();
         connectGoogleApi();
 
         loadElevationManager(dataSource);
     }
 
-    private void loadViewPager(){
+    private void loadViewPager()
+    {
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
 
         pagerAdapter = new SampleFragmentPagerAdapter(getSupportFragmentManager(), MainActivity.this);
@@ -105,8 +107,10 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
         tabLayout.setupWithViewPager(viewPager);
     }
 
-    private void connectGoogleApi(){
-        if (googleApiClient == null) {
+    private void connectGoogleApi()
+    {
+        if (googleApiClient == null)
+        {
             googleApiClient = new GoogleApiClient.Builder(this)
                     .addApi(LocationServices.API)
                     .addConnectionCallbacks(this)
@@ -136,7 +140,8 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
 //    }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         menu.findItem(R.id.action_terrain_map).setChecked(terrainMap);
         menu.findItem(R.id.action_show_accuracy).setChecked(showAccuracy);
@@ -146,10 +151,12 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
         MapTab mapTab = (MapTab) pagerAdapter.getItem(1);
 
-        switch (item.getItemId()) {
+        switch (item.getItemId())
+        {
 
             case R.id.action_terrain_map:
                 item.setChecked(!item.isChecked());
@@ -186,30 +193,39 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
                 showAboutDialog();
                 return true;
 
-            default: return super.onOptionsItemSelected(item);
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
-    public void showAR(View view) {
-        if (!points.isEmpty()){
-            new Thread(new Runnable() {
+    public void showAR(View view)
+    {
+        if (!points.isEmpty())
+        {
+            new Thread(new Runnable()
+            {
                 @Override
-                public void run() {
+                public void run()
+                {
                     midPoints.clear();
                     if (!pointMode) calculateMidPoints();
                     Intent i = new Intent(MainActivity.this, ARActivity.class);
                     startActivity(i);
                 }
             }).start();
-        } else {
+        }
+        else
+        {
             Toast.makeText(this, getString(R.string.no_points), Toast.LENGTH_SHORT).show();
         }
 
     }
 
-    private void calculateMidPoints() {
+    private void calculateMidPoints()
+    {
 
-        for (int i = 0; i < points.size()-1; i++){ //vypočítat body
+        for (int i = 0; i < points.size() - 1; i++)
+        { //vypočítat body
 
             double averageDistanceToUser = (GeoTools.getDistance(points.get(i), userLocation) + GeoTools.getDistance(points.get(i + 1), userLocation)) / 2;
 
@@ -230,35 +246,44 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
         }
     }
 
-    public ElevationManager getElevationManager() {
+    public ElevationManager getElevationManager()
+    {
         return elevationManager;
     }
 
-    public Location getCurrentLocation(){
+    public Location getCurrentLocation()
+    {
         return userLocation;
     }
 
-    public List<Location> getPoints() {
+    public List<Location> getPoints()
+    {
         return points;
     }
 
     @Override
-    protected void onPause() {
+    protected void onPause()
+    {
         super.onPause();
     }
 
     @Override
-    protected void onRestart() {
-        if (googleApiClient != null){
+    protected void onRestart()
+    {
+        if (googleApiClient != null)
+        {
             googleApiClient.connect();
-        } else {
+        }
+        else
+        {
             checkPermissionsAndProceed();
         }
         super.onRestart();
     }
 
     @Override
-    protected void onStop() {
+    protected void onStop()
+    {
         if (googleApiClient != null) googleApiClient.disconnect();
 
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
@@ -274,14 +299,16 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
     }
 
     @Override
-    protected void onDestroy() {
+    protected void onDestroy()
+    {
         super.onDestroy();
 
         if (dataProvider != null) dataProvider.cancelDownload();
     }
 
     @Override
-    public void onConnected(Bundle bundle) {
+    public void onConnected(Bundle bundle)
+    {
         LocationRequest locationRequest = new LocationRequest();
         locationRequest.setInterval(10000);
         locationRequest.setFastestInterval(5000);
@@ -292,14 +319,20 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
     }
 
     @Override
-    public void onLocationChanged(final Location location) {
+    public void onLocationChanged(final Location location)
+    {
 
-        new Thread(new Runnable() {
+        new Thread(new Runnable()
+        {
             @Override
-            public void run() {
-                if (elevationManager != null){
+            public void run()
+            {
+                if (elevationManager != null)
+                {
                     userLocation = elevationManager.getNearestElevation(location);
-                } else {
+                }
+                else
+                {
                     userLocation = location;
                 }
             }
@@ -307,67 +340,88 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
     }
 
     @Override
-    public void onConnectionSuspended(int i) {
+    public void onConnectionSuspended(int i)
+    {
     }
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult)
+    {
 
     }
 
-    private void checkPermissionsAndProceed() {
+    private void checkPermissionsAndProceed()
+    {
         boolean cameraGranted;
-        if (PermissionInterpreter.isCameraGranted(this)){
+        if (PermissionInterpreter.isCameraGranted(this))
+        {
             cameraGranted = true;
-        } else {
+        }
+        else
+        {
             cameraGranted = false;
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA);
         }
 
         boolean storageGranted;
-        if (cameraGranted && PermissionInterpreter.isReadStorageGranted(this)){
+        if (cameraGranted && PermissionInterpreter.isReadStorageGranted(this))
+        {
             storageGranted = true;
-        } else {
+        }
+        else
+        {
             storageGranted = false;
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE);
         }
 
-        if (cameraGranted && storageGranted && PermissionInterpreter.isLocationGranted(this)){
+        if (cameraGranted && storageGranted && PermissionInterpreter.isLocationGranted(this))
+        {
             proceedAfterPermissionsGranted();
-        } else {
+        }
+        else
+        {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION},ACCESS_FINE_LOCATION);
+                    Manifest.permission.ACCESS_COARSE_LOCATION}, ACCESS_FINE_LOCATION);
         }
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (grantResults.length > 0) {
-            if (PermissionInterpreter.evaluateGrantResults(grantResults)) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+    {
+        if (grantResults.length > 0)
+        {
+            if (PermissionInterpreter.evaluateGrantResults(grantResults))
+            {
                 checkPermissionsAndProceed();
-            } else {
+            }
+            else
+            {
                 showPermissionDeniedAndCloseApp();
             }
         }
     }
 
 
-    private void loadElevationManager(final int dataSource){
+    private void loadElevationManager(final int dataSource)
+    {
         String rootPath = getFilesDir().getAbsolutePath();
 
         if (dataProvider != null) dataProvider.cancelDownload();
         dataProvider = new ElevationDataProvider(dataSource, rootPath, this);
 
-        dataProvider.getAsyncManager(dataProvider.new OnDataReadyListener() {
+        dataProvider.getAsyncManager(dataProvider.new OnDataReadyListener()
+        {
             @Override
-            public void onDataReady(ElevationManager em) {
+            public void onDataReady(ElevationManager em)
+            {
                 elevationManager = em;
                 MainActivity.this.dataSource = dataSource;
             }
 
             @Override
-            public void onDataFailed() {
+            public void onDataFailed()
+            {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setMessage(getString(R.string.extracting_error));
                 builder.show();
@@ -377,15 +431,18 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
         // elevationManager = new Elevation49ManagerASC("/sdcard/Download/ARCASCII-parsed.asc"); testovací ASC
     }
 
-    public boolean isTerrainMap() {
+    public boolean isTerrainMap()
+    {
         return terrainMap;
     }
 
-    public boolean isShowAccuracy() {
+    public boolean isShowAccuracy()
+    {
         return showAccuracy;
     }
 
-    private void showPermissionDeniedAndCloseApp() {
+    private void showPermissionDeniedAndCloseApp()
+    {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(getString(R.string.grant_permissions))
                 .setTitle(getString(R.string.permissions_not_granted));
@@ -394,29 +451,41 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
         dialog.show();
 
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
+        handler.postDelayed(new Runnable()
+        {
+            public void run()
+            {
                 finish();
             }
         }, 2000);
     }
 
-    private void showDataChoiceDialog(){
-        CharSequence dataSources[] = new CharSequence[] {"Google Elevation API", getString(R.string.czechia), /*getString(R.string.taiwan),*/ "EUDEM Hradec Králové"};
+    private void showDataChoiceDialog()
+    {
+        CharSequence dataSources[] = new CharSequence[]{"Google Elevation API", getString(R.string.czechia), /*getString(R.string.taiwan),*/ "EUDEM Hradec Králové"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.choose_data_source));
-        builder.setSingleChoiceItems(dataSources, dataSource, new DialogInterface.OnClickListener() {
+        builder.setSingleChoiceItems(dataSources, dataSource, new DialogInterface.OnClickListener()
+        {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(DialogInterface dialog, int which)
+            {
 
                 int dataSourceToLoad = -1;
 
-                switch (which) {
-                    case (0): dataSourceToLoad = ElevationDataProvider.GOOGLE_ELEVATION_API; break;
-                    case (1): dataSourceToLoad = ElevationDataProvider.CZECHIA; break;
+                switch (which)
+                {
+                    case (0):
+                        dataSourceToLoad = ElevationDataProvider.GOOGLE_ELEVATION_API;
+                        break;
+                    case (1):
+                        dataSourceToLoad = ElevationDataProvider.CZECHIA;
+                        break;
                     //case (2): dataSourceToLoad = ElevationDataProvider.TAIWAN; break;
-                    case (2): dataSourceToLoad = ElevationDataProvider.HRADEC_KRALOVE; break;
+                    case (2):
+                        dataSourceToLoad = ElevationDataProvider.HRADEC_KRALOVE;
+                        break;
                 }
 
                 loadElevationManager(dataSourceToLoad);
@@ -426,26 +495,37 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
         builder.show();
     }
 
-    private void showChangeLanguageDialog() {
-        CharSequence languages[] = new CharSequence[] {getString(R.string.czech), getString(R.string.english)};
+    private void showChangeLanguageDialog()
+    {
+        CharSequence languages[] = new CharSequence[]{getString(R.string.czech), getString(R.string.english)};
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         int previouslySelected;
-        if (LocaleHelper.getLanguage(this).equals("cs")){
+        if (LocaleHelper.getLanguage(this).equals("cs"))
+        {
             previouslySelected = 0;
-        } else {
+        }
+        else
+        {
             previouslySelected = 1;
         }
 
         builder.setTitle(getString(R.string.select_language));
-        builder.setSingleChoiceItems(languages, previouslySelected, new DialogInterface.OnClickListener() {
+        builder.setSingleChoiceItems(languages, previouslySelected, new DialogInterface.OnClickListener()
+        {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(DialogInterface dialog, int which)
+            {
                 String language = "en";
 
-                switch (which) {
-                    case (0): language = "cs"; break;
-                    case (1): language = "en"; break;
+                switch (which)
+                {
+                    case (0):
+                        language = "cs";
+                        break;
+                    case (1):
+                        language = "en";
+                        break;
                 }
 
                 LocaleHelper.setLocale(MainActivity.this, language);
@@ -460,40 +540,50 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
         builder.show();
     }
 
-    private void showAboutDialog() {
+    private void showAboutDialog()
+    {
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_about);
         dialog.show();
     }
 
     @Override
-    protected void onNewIntent(Intent intent) {
+    protected void onNewIntent(Intent intent)
+    {
         super.onNewIntent(intent);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(getString(R.string.cancel_download));
 
-        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
+        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener()
+        {
+            public void onClick(DialogInterface dialog, int id)
+            {
                 if (dataProvider != null) dataProvider.cancelDownload();
             }
         });
 
         String intentAction = intent.getAction();
-        if (intentAction != null && intentAction.equals(DownloadNotificationBuilder.CANCEL_DOWNLOAD)) showCancelDialog();
+        if (intentAction != null && intentAction.equals(DownloadNotificationBuilder.CANCEL_DOWNLOAD))
+            showCancelDialog();
     }
 
-    private void showCancelDialog() {
+    private void showCancelDialog()
+    {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(getString(R.string.cancel_download));
 
-        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
+        builder.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener()
+        {
+            public void onClick(DialogInterface dialog, int id)
+            {
                 if (dataProvider != null) dataProvider.cancelDownload();
             }
         });
-        builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
+        builder.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener()
+        {
+            public void onClick(DialogInterface dialog, int id)
+            {
             }
         });
         builder.show();
