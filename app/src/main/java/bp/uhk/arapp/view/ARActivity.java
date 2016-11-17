@@ -16,14 +16,21 @@
 
 package bp.uhk.arapp.view;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.PixelFormat;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraManager;
 import android.opengl.GLSurfaceView;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.SizeF;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
@@ -76,6 +83,13 @@ public class ARActivity extends Activity implements ScrollGestureListener {
         fixTextView = (TextView) findViewById(R.id.tv_fix);
 
         renderer = new WorldRenderer(sensorProvider);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            CameraManager cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+            float fov = calculateFOVCameraAPI2(cameraManager);
+            if (fov > 30 && fov < 60) renderer.setFov(fov);
+        }
+
         glSurfaceView = (GLSurfaceView)findViewById(R.id.glSurfaceView);
         glSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         glSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
@@ -181,5 +195,28 @@ public class ARActivity extends Activity implements ScrollGestureListener {
             }
         }, 1000);
     }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private float calculateFOVCameraAPI2(CameraManager cManager) {
+        float verticalAngle = 0;
+        try {
+            for (final String cameraId : cManager.getCameraIdList()) {
+                CameraCharacteristics characteristics = cManager.getCameraCharacteristics(cameraId);
+                int cOrientation = characteristics.get(CameraCharacteristics.LENS_FACING);
+                if (cOrientation == CameraCharacteristics.LENS_FACING_BACK) {
+                    float[] maxFocus = characteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS);
+                    SizeF size = characteristics.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE);
+                    float w = size.getWidth();
+                    float h = size.getHeight();
+                    verticalAngle = (float) Math.toDegrees(2 * Math.atan(h / (maxFocus[0] * 2)));
+                    // horizontalAngle = (float) Math.toDegrees(2 * Math.atan(w / (maxFocus[0] * 2)));
+                }
+            }
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
+        return verticalAngle;
+    }
+
 }
 

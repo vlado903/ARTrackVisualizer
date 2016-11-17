@@ -38,7 +38,7 @@ public class CoordinatesConverter {
 
     private synchronized void calculateCoordinates() {
         convertCoordinatesToMeters();
-        if (interpolationMode) zoomCoordinatesIfFar();
+        if (interpolationMode) zoomIfFar();
     }
 
     private void convertCoordinatesToMeters() {
@@ -47,14 +47,14 @@ public class CoordinatesConverter {
         if (userLat > 0){
             latSignum = Math.signum(objectLat - userLat);   //severní polokoule
         }else{
-            latSignum = userLat - objectLat;                //jižní polokoule
+            latSignum = Math.signum(userLat - objectLat);   //jižní polokoule
         }
 
         double lonSignum;
         if (userLon > 0){
-            lonSignum = Math.signum(objectLon - userLon);   //severní polokoule
+            lonSignum = Math.signum(objectLon - userLon);   //východní polokoule
         }else{
-            lonSignum = Math.signum(userLon - objectLon);   //jižní polokoule
+            lonSignum = Math.signum(userLon - objectLon);   //západní polokoule
         }
 
         x = lonSignum * 1000 * GeoTools.getDistance(userLat, objectLon, userLat, userLon);
@@ -64,7 +64,7 @@ public class CoordinatesConverter {
         System.out.println("x: " + x + " y: " + y + " z: " + z);
     }
 
-    private void zoomCoordinatesIfFar() {
+    private void zoomIfFar() {
 
         double distanceXY = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));                        //vzdálenost bez ohledu na nadmořskou výšku v metrech
         double distance = (float) Math.sqrt(Math.pow(distanceXY, 2) + Math.pow(z, 2));        //celková vzdálenost v metrech

@@ -19,7 +19,7 @@ public class WorldRenderer implements Renderer, SensorListener {
 
     public static float Z_FAR_VALUE = 700f;
 
-    static final float LENSE_ANGLE = 43.2f;     //camera API hlasí getHorizontalViewAngle() 57.6 a getVerticalViewAngle() 43.2
+    private float fov = 39.0f;
 
     private float[] rotationMatrix = new float[16];
     private float yawFix = 0;
@@ -65,7 +65,7 @@ public class WorldRenderer implements Renderer, SensorListener {
         // Calculate the aspect ratio of the window
         float aspectRatio = (float) width / (float) height;
 
-        GLU.gluPerspective(gl, LENSE_ANGLE, aspectRatio, 0.1f, Z_FAR_VALUE);
+        GLU.gluPerspective(gl, fov, aspectRatio, 0.1f, Z_FAR_VALUE);
         // Select the modelview matrix
         gl.glMatrixMode(GL10.GL_MODELVIEW);
         // Reset the modelview matrix
@@ -107,4 +107,7 @@ public class WorldRenderer implements Renderer, SensorListener {
         }
     }
 
+    public void setFov(float fov) {
+        this.fov = fov;
+    }
 }
