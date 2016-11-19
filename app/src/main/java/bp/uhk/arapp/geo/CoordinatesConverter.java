@@ -50,25 +50,8 @@ public class CoordinatesConverter
     private void convertCoordinatesToMeters()
     {
 
-        double latSignum;
-        if (userLat > 0)
-        {
-            latSignum = Math.signum(objectLat - userLat);   //severní polokoule
-        }
-        else
-        {
-            latSignum = Math.signum(userLat - objectLat);   //jižní polokoule
-        }
-
-        double lonSignum;
-        if (userLon > 0)
-        {
-            lonSignum = Math.signum(objectLon - userLon);   //východní polokoule
-        }
-        else
-        {
-            lonSignum = Math.signum(userLon - objectLon);   //západní polokoule
-        }
+        double latSignum = Math.signum(objectLat - userLat);
+        double lonSignum = Math.signum(objectLon - userLon);
 
         x = lonSignum * 1000 * GeoTools.getDistance(userLat, objectLon, userLat, userLon);
         y = latSignum * 1000 * GeoTools.getDistance(objectLat, userLon, userLat, userLon);
