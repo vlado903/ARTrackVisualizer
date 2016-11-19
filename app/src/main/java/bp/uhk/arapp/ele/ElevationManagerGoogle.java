@@ -1,6 +1,7 @@
 package bp.uhk.arapp.ele;
 
 import android.location.Location;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,9 +17,10 @@ import java.util.List;
  */
 public class ElevationManagerGoogle implements ElevationManager
 {
+    private static final String TAG = ElevationManagerGoogle.class.getSimpleName();
 
-    String url = "https://maps.googleapis.com/maps/api/elevation/json?locations=%s&key=%s";
-    String key = "";
+    private String url = "https://maps.googleapis.com/maps/api/elevation/json?locations=%s&key=%s";
+    private String key = "";
 
     public ElevationManagerGoogle(String key)
     {
@@ -37,7 +39,7 @@ public class ElevationManagerGoogle implements ElevationManager
         locationResult.setAltitude(0);
         locationResult.setAccuracy(-1);
 
-        String location = String.valueOf(latitude) + "," + String.valueOf(longitude);
+        String location = latitude + "," + longitude;
 
         try
         {
@@ -50,7 +52,7 @@ public class ElevationManagerGoogle implements ElevationManager
             e.printStackTrace();
         }
 
-        System.out.println("Total getNearestElevation elapsed time - " + String.valueOf(System.currentTimeMillis() - startTime) + "ms");
+        Log.d(TAG, "Total getNearestElevation elapsed time - " + (System.currentTimeMillis() - startTime) + "ms");
 
         return locationResult;
     }
@@ -94,7 +96,7 @@ public class ElevationManagerGoogle implements ElevationManager
             }
         }
 
-        System.out.println("Total getNearestElevation elapsed time - " + String.valueOf(System.currentTimeMillis() - startTime) + "ms");
+        Log.d(TAG, "Total getNearestElevation elapsed time - " + (System.currentTimeMillis() - startTime) + "ms");
 
         return locationList;
     }

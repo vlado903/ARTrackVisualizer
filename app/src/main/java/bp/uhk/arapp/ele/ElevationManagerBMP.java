@@ -3,6 +3,7 @@ package bp.uhk.arapp.ele;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -21,24 +22,25 @@ import bp.uhk.arapp.geo.GeoTools;
  */
 public class ElevationManagerBMP implements ElevationManager
 {
+    private static final String TAG = ElevationManagerBMP.class.getSimpleName();
 
-    ArrayList<String> paths = new ArrayList<>();
-    NavigableSet<Double> borders = new TreeSet<>();
+    private ArrayList<String> paths = new ArrayList<>();
+    private NavigableSet<Double> borders = new TreeSet<>();
 
-    Bitmap eleBitmap;
-    String filePath = "";
+    private Bitmap eleBitmap;
+    private String filePath = "";
 
-    double X_MIN;
-    double Y_MIN;  //levý dolní roh
-    double X_MAX;
-    double Y_MAX;
-    double cellSize;
-    String noDataValue = "";
+    private double X_MIN;
+    private double Y_MIN;  //levý dolní roh
+    private double X_MAX;
+    private double Y_MAX;
+    private double cellSize;
+    private String noDataValue = "";
 
-    int rows;
-    int columns;
-    int pixelHeight;
-    int numOfFiles;
+    private int rows;
+    private int columns;
+    private int pixelHeight;
+    private int numOfFiles;
 
     public ElevationManagerBMP(String infoFilePath)
     {
@@ -137,12 +139,12 @@ public class ElevationManagerBMP implements ElevationManager
             indexX++;
         }
 
-        //System.out.println(String.format("fileNo: %s   indexY: %s   bitmapHeight: %s   latitude: %s   fileLatitude: %s   closestBorder: %s", fileNo, indexY, eleBitmap.getHeight(), latitude, fileLatitude, closestBorder));
+        //Log.d(TAG, String.format("fileNo: %s   indexY: %s   bitmapHeight: %s   latitude: %s   fileLatitude: %s   closestBorder: %s", fileNo, indexY, eleBitmap.getHeight(), latitude, fileLatitude, closestBorder));
 
         int i = eleBitmap.getPixel(indexX, indexY) << 8;
         double result = (double) i / 100;
 
-        System.out.println("Total getNearestElevation elapsed time - " + String.valueOf(System.currentTimeMillis() - startTime) + "ms");
+        Log.d(TAG, "Total getNearestElevation elapsed time - " + (System.currentTimeMillis() - startTime) + "ms");
 
         locationResult.setAltitude(result);
         locationResult.setAccuracy(Math.round(GeoTools.getDistance(lat, lon, fileLatitude, fileLongitude) * 1000));

@@ -1,6 +1,7 @@
 package bp.uhk.arapp.ele;
 
 import android.location.Location;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -12,19 +13,20 @@ import java.util.List;
  */
 public class ElevationManagerASC implements ElevationManager
 {
+    private static final String TAG = ElevationManagerASC.class.getSimpleName();
 
-    double X_MIN;
-    double Y_MIN;  //levý dolní roh
-    double cellSize;
-    String noDataValue;
+    private double X_MIN;
+    private double Y_MIN;  //levý dolní roh
+    private double cellSize;
+    private String noDataValue;
 
-    int rowsX;
-    int columnsY;
-    long dataStart;
+    private int rowsX;
+    private int columnsY;
+    private long dataStart;
 
-    String filepath;
+    private String filepath;
 
-    RandomAccessFile randomAccessFile;
+    private RandomAccessFile randomAccessFile;
 
     public ElevationManagerASC(String filePathToASC)
     {
@@ -102,7 +104,7 @@ public class ElevationManagerASC implements ElevationManager
             e.printStackTrace();
         }
 
-        System.out.println("Total getNearestElevation elapsed time - " + String.valueOf(System.currentTimeMillis() - startTime) + "ms");
+        Log.d(TAG, "Total getNearestElevation elapsed time - " + (System.currentTimeMillis() - startTime) + "ms");
 
         locationResult.setAltitude(Double.valueOf(elevation));
         return locationResult;

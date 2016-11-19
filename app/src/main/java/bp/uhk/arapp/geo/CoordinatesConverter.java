@@ -1,6 +1,7 @@
 package bp.uhk.arapp.geo;
 
 import android.location.Location;
+import android.util.Log;
 
 import bp.uhk.arapp.ar.WorldRenderer;
 
@@ -10,6 +11,7 @@ import bp.uhk.arapp.ar.WorldRenderer;
 public class CoordinatesConverter
 {
 
+    private static final String TAG = CoordinatesConverter.class.getSimpleName();
     public static float MAX_FAR_VALUE = -1; //neboli přibližuj body neustále
 
     private double x, y, z;
@@ -57,7 +59,7 @@ public class CoordinatesConverter
         y = latSignum * 1000 * GeoTools.getDistance(objectLat, userLon, userLat, userLon);
         z = objectAlt - userAlt;
 
-        System.out.println("x: " + x + " y: " + y + " z: " + z);
+        Log.d(TAG, "x: " + x + " y: " + y + " z: " + z);
     }
 
     private void zoomIfFar()
