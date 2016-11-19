@@ -16,7 +16,8 @@ import bp.uhk.arapp.view.components.DownloadNotificationBuilder;
 /**
  * Created by vlado on 19.04.2016.
  */
-public class DownloadAsyncTask extends AsyncTask<Void, Integer, Void> {
+public class DownloadAsyncTask extends AsyncTask<Void, Integer, Void>
+{
 
 
     private String stringUrl = "";
@@ -26,22 +27,26 @@ public class DownloadAsyncTask extends AsyncTask<Void, Integer, Void> {
 
     private long filesize = 0, downloaded = 0;
 
-    public DownloadAsyncTask(String filepath, String url, Activity activity){
+    public DownloadAsyncTask(String filepath, String url, Activity activity)
+    {
         this.filepath = filepath;
         this.stringUrl = url;
 
         notificationBuilder = new DownloadNotificationBuilder(activity);
     }
 
-    public DownloadAsyncTask(String filepath, String url){
+    public DownloadAsyncTask(String filepath, String url)
+    {
         this.filepath = filepath;
         this.stringUrl = url;
     }
 
 
     @Override
-    protected Void doInBackground(Void... params) {
-        try {
+    protected Void doInBackground(Void... params)
+    {
+        try
+        {
             URL url = new URL(stringUrl);
             URLConnection connection = url.openConnection();
             filesize = connection.getContentLength();
@@ -60,14 +65,17 @@ public class DownloadAsyncTask extends AsyncTask<Void, Integer, Void> {
 
             long millis = System.currentTimeMillis();
 
-            while ((count = in.read(buffer)) != -1) {
+            while ((count = in.read(buffer)) != -1)
+            {
                 downloaded += count;
                 out.write(buffer, 0, count);
 
-                if (notificationBuilder != null){
+                if (notificationBuilder != null)
+                {
                     long elapsedTime;
-                    if (i % 500 == 0 && (elapsedTime = System.currentTimeMillis() - millis) > 1000){
-                        notificationBuilder.updateProgress((int) (100*downloaded/filesize), (int) (500*1000/elapsedTime));
+                    if (i % 500 == 0 && (elapsedTime = System.currentTimeMillis() - millis) > 1000)
+                    {
+                        notificationBuilder.updateProgress((int) (100 * downloaded / filesize), (int) (500 * 1000 / elapsedTime));
                         millis = System.currentTimeMillis();
                     }
                     i++;
@@ -77,38 +85,46 @@ public class DownloadAsyncTask extends AsyncTask<Void, Integer, Void> {
             out.flush();
             out.close();
             in.close();
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             e.printStackTrace();
-            if (notificationBuilder != null)notificationBuilder.showDownloadingError();
+            if (notificationBuilder != null) notificationBuilder.showDownloadingError();
         }
         return null;
     }
 
     @Override
-    protected void onPostExecute(Void aVoid) {
+    protected void onPostExecute(Void aVoid)
+    {
         super.onPostExecute(aVoid);
-        if (filesize == downloaded){
-            if (notificationBuilder != null)notificationBuilder.finish();
+        if (filesize == downloaded)
+        {
+            if (notificationBuilder != null) notificationBuilder.finish();
             if (downloadListener != null) downloadListener.onDownloadFinished();
         }
     }
 
-    public void setDownloadListener(DownloadListener downloadListener) {
+    public void setDownloadListener(DownloadListener downloadListener)
+    {
         this.downloadListener = downloadListener;
     }
 
-    public void stop() {
+    public void stop()
+    {
         cancel(true);
 
         File f = new File(filepath);
         if (f.exists()) f.delete();
-        if (notificationBuilder != null){
+        if (notificationBuilder != null)
+        {
             notificationBuilder.cancel();
             notificationBuilder = null;
         }
     }
 
-    public abstract class DownloadListener {
+    public abstract class DownloadListener
+    {
         public abstract void onDownloadFinished();
     }
 }

@@ -7,9 +7,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
@@ -42,15 +42,12 @@ import bp.uhk.arapp.view.components.SampleFragmentPagerAdapter;
 import bp.uhk.arapp.view.tabs.HomeTab;
 import bp.uhk.arapp.view.tabs.MapTab;
 import bp.uhk.arapp.view.util.LocaleHelper;
-import bp.uhk.arapp.view.util.PermissionInterpreter;
 
 public class MainActivity extends AppCompatActivity implements ConnectionCallbacks,
         OnConnectionFailedListener, LocationListener, OnRequestPermissionsResultCallback
 {
 
-    private static final int REQUEST_CAMERA = 0;
-    private static final int WRITE_EXTERNAL_STORAGE = 1;
-    private static final int ACCESS_FINE_LOCATION = 2;
+    private static final int REQUEST_ESSENTIAL_PERMITIONS = 0;
     public static List<Location> points = new ArrayList<>();
     public static List<Location> midPoints = new ArrayList<>();
     public static Location userLocation;
@@ -321,7 +318,6 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
     @Override
     public void onLocationChanged(final Location location)
     {
-
         new Thread(new Runnable()
         {
             @Override
@@ -352,53 +348,32 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
 
     private void checkPermissionsAndProceed()
     {
-        boolean cameraGranted;
-        if (PermissionInterpreter.isCameraGranted(this))
-        {
-            cameraGranted = true;
-        }
-        else
-        {
-            cameraGranted = false;
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA);
-        }
-
-        boolean storageGranted;
-        if (cameraGranted && PermissionInterpreter.isReadStorageGranted(this))
-        {
-            storageGranted = true;
-        }
-        else
-        {
-            storageGranted = false;
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE);
-        }
-
-        if (cameraGranted && storageGranted && PermissionInterpreter.isLocationGranted(this))
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
         {
             proceedAfterPermissionsGranted();
         }
         else
         {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION}, ACCESS_FINE_LOCATION);
+                    Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_ESSENTIAL_PERMITIONS);
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
     {
-        if (grantResults.length > 0)
+        if (requestCode == REQUEST_ESSENTIAL_PERMITIONS)
         {
-            if (PermissionInterpreter.evaluateGrantResults(grantResults))
+            for (int result : grantResults)
             {
-                checkPermissionsAndProceed();
+                if (result != PackageManager.PERMISSION_GRANTED)
+                {
+                    finish();
+                }
             }
-            else
-            {
-                showPermissionDeniedAndCloseApp();
-            }
+            checkPermissionsAndProceed();
         }
     }
 
@@ -427,8 +402,6 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
                 builder.show();
             }
         });
-
-        // elevationManager = new Elevation49ManagerASC("/sdcard/Download/ARCASCII-parsed.asc"); testovací ASC
     }
 
     public boolean isTerrainMap()
@@ -441,24 +414,24 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
         return showAccuracy;
     }
 
-    private void showPermissionDeniedAndCloseApp()
-    {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(getString(R.string.grant_permissions))
-                .setTitle(getString(R.string.permissions_not_granted));
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable()
-        {
-            public void run()
-            {
-                finish();
-            }
-        }, 2000);
-    }
+//    private void showPermissionDeniedAndCloseApp()
+//    {
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setMessage(getString(R.string.grant_permissions))
+//                .setTitle(getString(R.string.permissions_not_granted));
+//
+//        AlertDialog dialog = builder.create();
+//        dialog.show();
+//
+//        Handler handler = new Handler();
+//        handler.postDelayed(new Runnable()
+//        {
+//            public void run()
+//            {
+//                finish();
+//            }
+//        }, 2000);
+//    }
 
     private void showDataChoiceDialog()
     {
@@ -589,7 +562,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionCallbac
         builder.show();
     }
 
-//    private void useFileManager() {
+//    private void showFileManagerDialog() {
 //        new FileChooser(this).setFileListener(new FileChooser.FileSelectedListener() {
 //            @Override
 //            public void fileSelected(File f) {

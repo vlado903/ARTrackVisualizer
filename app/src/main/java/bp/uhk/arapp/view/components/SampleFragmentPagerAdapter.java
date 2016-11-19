@@ -11,9 +11,9 @@ import bp.uhk.arapp.view.tabs.MapTab;
 
 public class SampleFragmentPagerAdapter extends FragmentPagerAdapter
 {
-    static HomeTab homeTab;
-    static MapTab mapTab;
-    final int PAGE_COUNT = 2;
+    private final int PAGE_COUNT = 2;
+    private HomeTab homeTab;
+    private MapTab mapTab;
     private Context context;
 
     public SampleFragmentPagerAdapter(FragmentManager fm, Context context)
@@ -21,16 +21,26 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter
         super(fm);
         this.context = context;
 
+        homeTab = new HomeTab();
+        mapTab = new MapTab();
+    }
+
+    private Fragment getHomeTabInstance()
+    {
         if (homeTab == null)
         {
             homeTab = new HomeTab();
-            homeTab.setRetainInstance(true);
         }
+        return homeTab;
+    }
+
+    private Fragment getMapTabInstance()
+    {
         if (mapTab == null)
         {
             mapTab = new MapTab();
-            mapTab.setRetainInstance(true); //potřebuji, aby se nevytvořil nový fragment po recreate(), jinak se na něj přes SampleFragmentPagerAdapter nedostanu
         }
+        return mapTab;
     }
 
     @Override
@@ -44,11 +54,11 @@ public class SampleFragmentPagerAdapter extends FragmentPagerAdapter
     {
         if (position == 0)
         {
-            return homeTab;
+            return getHomeTabInstance();
         }
         else
         {
-            return mapTab;
+            return getMapTabInstance();
         }
     }
 

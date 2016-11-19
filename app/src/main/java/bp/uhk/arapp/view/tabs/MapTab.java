@@ -220,7 +220,7 @@ public class MapTab extends SupportMapFragment implements OnMapReadyCallback
             @Override
             public void run()
             {
-                marker.setTitle(String.format(getString(R.string.marker_title), markerList.size()));
+                marker.setTitle(String.format(getString(R.string.marker_title), String.valueOf(markerList.size())));
                 if (mainActivity.isShowAccuracy())
                 {
                     marker.setSnippet(String.format(getString(R.string.marker_snippet_accuracy), l.getAltitude(), l.getAccuracy()));

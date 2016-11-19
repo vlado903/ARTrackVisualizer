@@ -131,7 +131,7 @@ public class HomeTab extends Fragment
         }
 
         tvDistance.setText(String.format("%.0f m", GeoTools.getTotalDistance(mainActivity.getPoints()) * 1000)); //převod na metry
-        tvNumOfPoints.setText(mainActivity.getPoints().size());
+        tvNumOfPoints.setText(String.valueOf(mainActivity.getPoints().size()));
 
         refreshChart();
     }
