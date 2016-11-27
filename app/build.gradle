@@ -8,8 +8,8 @@ android {
         applicationId "bp.uhk.arapp"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 5
-        versionName "1.1"
+        versionCode 6
+        versionName "1.1.1"
     }
     buildTypes {
         release {
